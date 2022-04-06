@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import {
   Text,
   StyleSheet,
@@ -9,20 +9,47 @@ import {
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import StreamingImage from "../components/StreamingImage";
 import { COLORS, MARGIN, SIZES } from "../constants/theme";
 import { MoviesContext } from "../src/context";
-import { formatedTime } from '../src/utils/formatTime'
+import { formatedTime } from "../src/utils/formatTime";
+import { formatDate } from "../src/utils/formatDate";
+import { handleGetBase64 } from "../src/services/fileSystemSave";
 
 const DetailsScreen = ({ navigation, route }) => {
   const { movieId } = route.params;
   const appContext = useContext(MoviesContext);
   const { savedMovies } = appContext;
   const [item, setItem] = useState({});
+  const [dataImg, setDataImg] = useState("");
+
+  const getImgGo = useCallback(async () => {
+    try {
+
+        let data = await handleGetBase64(item.imgKey);
+        setDataImg(data);
+
+    } catch (err) {
+      // console.log(err);
+    }
+  }, [item, dataImg]);
 
   useEffect(() => {
     if (!movieId) return navigation.navigate("Guardadas");
     setItem(() => savedMovies.find((movie) => movie.movieId === movieId));
   }, []);
+
+  useEffect(() => {
+    if (!dataImg === "") return;
+
+    getImgGo();
+  }, []);
+
+  useEffect(() => {
+    if (!dataImg === "") return;
+
+    getImgGo();
+  }, [item, dataImg]);
 
   if (Object.entries(item).length < 2) {
     return (
@@ -31,6 +58,7 @@ const DetailsScreen = ({ navigation, route }) => {
       </View>
     );
   }
+
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => alert(JSON.stringify(item))}>
@@ -53,13 +81,7 @@ const DetailsScreen = ({ navigation, route }) => {
             style={styles.backgroundImg}
             resizeMode="contain"
             source={{
-              uri:
-                item?.url_img.length > 235
-                  ? `data:image/jpeg;base64,${item?.url_img}`
-                  : item?.url_img.slice(
-                      item?.url_img.match("webp").index + 6,
-                      -3
-                    ),
+              uri: dataImg === "" ? "data:image/jpeg;base64," : dataImg,
             }}
           />
         )}
@@ -95,7 +117,7 @@ const DetailsScreen = ({ navigation, route }) => {
                       color: COLORS.lightGray,
                     }}
                   >
-                    /10
+                    {item?.rating !== "N/A" && "/10"}
                   </Text>
                 </Text>
               </View>
@@ -119,7 +141,9 @@ const DetailsScreen = ({ navigation, route }) => {
                   Duración:
                   <Text style={{ color: COLORS.white, fontWeight: "bold" }}>
                     {""}
-                    {`\n ${item?.runing_time}\n ${formatedTime(item?.runing_time)}`}
+                    {`\n ${item?.runing_time}\n ${formatedTime(
+                      item?.runing_time
+                    )}`}
                   </Text>
                 </Text>
               </View>
@@ -128,7 +152,9 @@ const DetailsScreen = ({ navigation, route }) => {
               //*? WHERE WATCH
             }
             <View style={styles.whereWatch}>
-              <Text style={{ color: COLORS.white }}>En netflix...</Text>
+              {item.whereToWatch && (
+                <StreamingImage stream={[item.whereToWatch]} />
+              )}
             </View>
           </View>
           {
@@ -136,6 +162,9 @@ const DetailsScreen = ({ navigation, route }) => {
           }
 
           <View style={[styles.descContainer, {}]}>
+            {
+              //*? SINOPSIS */
+            }
             <Text
               style={{
                 fontSize: SIZES.h3,
@@ -145,18 +174,20 @@ const DetailsScreen = ({ navigation, route }) => {
               }}
             >
               Sinopsis:
-              <Text style={{ color: COLORS.lightGray, fontWeight: "bold" }}>
+              <Text style={{ color: COLORS.lightGray, fontWeight: "normal" }}>
                 {" "}
                 {item?.description}
               </Text>
             </Text>
+            {
+              //*? DIRECTOR */
+            }
             <Text
               style={{
                 fontSize: SIZES.h3,
                 color: COLORS.notSoGray,
                 fontWeight: "bold",
                 marginVertical: MARGIN.m1,
-
               }}
             >
               Director:
@@ -165,31 +196,53 @@ const DetailsScreen = ({ navigation, route }) => {
                 {item?.director}
               </Text>
             </Text>
+            {
+              //*? STARRING */
+            }
+            {item.starring.length ? (
+              <Text
+                style={{
+                  fontSize: SIZES.h3,
+                  color: COLORS.notSoGray,
+                  marginVertical: 2,
+                  fontWeight: "bold",
+                }}
+              >
+                Reparto:
+                {item.starring.map((star, i) => {
+                  if (i === 0) {
+                    return (
+                      <Text key={star + i} style={{ color: COLORS.lightGray }}>
+                        {" "}
+                        {star}
+                      </Text>
+                    );
+                  }
+                  return (
+                    <Text key={star + i} style={{ color: COLORS.lightGray }}>
+                      {", "}
+                      {star}
+                    </Text>
+                  );
+                })}
+              </Text>
+            ) : null}
+            {
+              //*? SAVED AT */
+            }
             <Text
               style={{
                 fontSize: SIZES.h3,
                 color: COLORS.notSoGray,
-                marginVertical: 2,
                 fontWeight: "bold",
+                marginVertical: MARGIN.m1,
               }}
             >
-              Reparto:
-              {item.starring.map((star, i) => {
-                if (i === 0) {
-                  return (
-                    <Text key={star + i} style={{ color: COLORS.lightGray }}>
-                      {" "}
-                      {star}
-                    </Text>
-                  );
-                }
-                return (
-                  <Text key={star + i} style={{ color: COLORS.lightGray }}>
-                    {", "}
-                    {star}
-                  </Text>
-                );
-              })}
+              Guardada:
+              <Text style={{ color: COLORS.lightGray, fontWeight: "bold" }}>
+                {" "}
+                {formatDate(item?.savedDate)}
+              </Text>
             </Text>
           </View>
         </ScrollView>
@@ -222,14 +275,14 @@ const styles = StyleSheet.create({
     padding: MARGIN.m3,
   },
   imgContainer: {
-    flex: 2,
+    flex: 1.6,
     width: "100%",
     backgroundColor: COLORS.black,
     padding: Dimensions.get("window").height * 0.01,
   },
   backgroundImg: {
     width: "100%",
-    height: Dimensions.get("window").height * 0.6,
+    height: Dimensions.get("window").height * 0.55,
   },
   ratingYearContainer: {
     flex: 1,
@@ -240,9 +293,11 @@ const styles = StyleSheet.create({
     marginTop: MARGIN.m5,
   },
   whereWatch: {
-    flex: 1,
+    flex: 1.3,
     marginTop: MARGIN.m5,
     padding: MARGIN.m3,
+    // borderWidth: 3,
+    // borderColor: COLORS.white,
   },
   whereWatchContainer: {
     flexDirection: "row",

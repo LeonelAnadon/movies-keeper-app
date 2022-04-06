@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { MoviesContext } from "../src/context";
-import { Image, Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { Image, Text, View, StyleSheet } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import { COLORS, MARGIN, SIZES } from "../constants/theme";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 // import { TouchableOpacity } from "react-native-gesture-handler";

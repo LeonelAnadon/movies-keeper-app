@@ -37,12 +37,13 @@ const theme = {
 
 function CustomDrawerContent(props) {
   const appContext = useContext(MoviesContext);
-  const { deleteAllViewedMovies } = appContext;
+  const { deleteAllViewedMovies, deleteAllSavedMovies } = appContext;
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
-  const createTwoButtonAlert = () =>
+
+  const handleDeleteAllWatchedMovies = () =>
     Alert.alert(
-      "Eliminando...",
+      "Eliminando 🗑",
       "Eliminaré todas las pelis que viste. ¿Continúo?",
       [
         {
@@ -51,6 +52,19 @@ function CustomDrawerContent(props) {
           style: "cancel",
         },
         { text: "Si, borralas.", onPress: () => deleteAllViewedMovies() },
+      ]
+    );
+  const handleDeleteAllSavedMovies = () =>
+    Alert.alert(
+      "Eliminando 🗑",
+      "Eliminaré todas las pelis que guardaste. ¿Continúo?",
+      [
+        {
+          text: "No",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        { text: "Si, borralas.", onPress: () => deleteAllSavedMovies() },
       ]
     );
 
@@ -83,22 +97,40 @@ function CustomDrawerContent(props) {
           label="Información"
           onPress={() => props.navigation.navigate("Vistas")}
         />
-        <DrawerItem
-          label={() => (
-            <Text style={{ color: COLORS.lightGray, marginLeft: -20 }}>
-              Borrar Vistas
-            </Text>
-          )}
-          onPress={() => createTwoButtonAlert()}
-          icon={() => (
-            <MaterialCommunityIcons
-              name="delete"
-              color={COLORS.pink}
-              size={SIZES.h1}
-            />
-          )}
-          style={{ marginHorizontal: 4 }}
-        />
+        <View>
+          <DrawerItem
+            label={() => (
+              <Text style={{ color: COLORS.lightGray, marginLeft: -20 }}>
+                Borrar Vistas
+              </Text>
+            )}
+            onPress={() => handleDeleteAllWatchedMovies()}
+            icon={() => (
+              <MaterialCommunityIcons
+                name="delete"
+                color={COLORS.pink}
+                size={SIZES.h1}
+              />
+            )}
+            style={{ marginHorizontal: 4 }}
+          />
+          <DrawerItem
+            label={() => (
+              <Text style={{ color: COLORS.lightGray, marginLeft: -20 }}>
+                Borrar Guardadas
+              </Text>
+            )}
+            onPress={() => handleDeleteAllSavedMovies()}
+            icon={() => (
+              <MaterialCommunityIcons
+                name="delete"
+                color={COLORS.pink}
+                size={SIZES.h1}
+              />
+            )}
+            style={{ marginHorizontal: 4 }}
+          />
+        </View>
       </View>
 
       {/* <Switch
@@ -154,6 +186,7 @@ const AppNavigator = () => {
           <Drawer.Screen
             name="About"
             options={{
+              headerShown: true,
               drawerLabel: () => (
                 <Text style={{ color: COLORS.lightGray, marginLeft: -20 }}>
                   Recomendados para ver

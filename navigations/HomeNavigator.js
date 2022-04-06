@@ -5,17 +5,18 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { StyleSheet, TextInput, Dimensions } from "react-native";
+import { StyleSheet, TextInput, Dimensions, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { createStackNavigator } from "@react-navigation/stack";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import HomeScreen from "../screens/HomeScreen";
 import SearchScreen from "../screens/SearchScreen";
-import { COLORS } from "../constants/theme";
+import { COLORS, TOTAL_HEIGHT, TOTAL_WIDTH  } from "../constants/theme";
 import DetailsScreen from "../screens/DetailsScreen";
 import { MoviesContext } from "../src/context";
 import ViewedScreen from "../screens/ViewedScreen";
+import { backgroundColor, color } from "react-native/Libraries/Components/View/ReactNativeStyleAttributes";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -25,7 +26,7 @@ function HomeTabs({ navigation }) {
   const [handleDeleteJustAdded, setHandleDeleteJustAdded] = useState(0)
   const textInput = useRef();
   const appContext = useContext(MoviesContext);
-  const { setInputText, savedMovies, deletingJustAdded } = appContext;
+  const { setInputText, savedMovies, deletingJustAdded, setToggleFilter } = appContext;
 
   const handleSubmit = () => {
     setInputText(searchText);
@@ -34,6 +35,10 @@ function HomeTabs({ navigation }) {
 
   const viewedScreenTriggered = () => {
     setHandleDeleteJustAdded(handleDeleteJustAdded + 1)
+  }
+
+  const handleFilter = () => {
+    setToggleFilter(state => !state)
   }
 
   useEffect(() => {
@@ -54,6 +59,7 @@ function HomeTabs({ navigation }) {
         tabBarLabelStyle: { fontSize: 12 },
         tabBarStyle: { height: Dimensions.get("window").width * 0.15 },
         headerShown: true,
+        headerStyle: {backgroundColor: 'black'} ,
         tabBarActiveTintColor: COLORS.pink,
         tabBarInactiveTintColor: COLORS.lightGray,
       }}
@@ -66,6 +72,17 @@ function HomeTabs({ navigation }) {
         component={HomeScreen}
         options={{
           headerRight: () => (
+            <View style={{flexDirection: 'row'}}>
+            <TouchableOpacity
+              style={{ marginRight: Dimensions.get("window").width * 0.05 }}
+            >
+              <MaterialCommunityIcons
+                name="filter"
+                color={COLORS.white}
+                size={30}
+                onPress={() => setToggleFilter(state => !state)}
+              />
+            </TouchableOpacity>
             <TouchableOpacity
               style={{ marginRight: Dimensions.get("window").width * 0.05 }}
             >
@@ -76,6 +93,8 @@ function HomeTabs({ navigation }) {
                 onPress={() => navigation.openDrawer()}
               />
             </TouchableOpacity>
+            </View>
+            
           ),
           tabBarIcon: ({ color, size, focused }) => (
             <MaterialCommunityIcons
@@ -84,7 +103,6 @@ function HomeTabs({ navigation }) {
               size={size}
             />
           ),
-
           tabBarBadge: savedMovies.length !== 0 ? savedMovies.length : null,
         }}
       />
@@ -210,6 +228,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     color: COLORS.black,
   },
+
 });
 
 export default HomeNavigator;

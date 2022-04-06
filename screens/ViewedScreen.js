@@ -58,11 +58,12 @@ const ViewedScreen = () => {
         <Text
           style={{
             color: COLORS.lightGray,
-            flex: 2,
+            flex: 2.5,
             fontWeight: "bold",
             marginLeft: MARGIN.m1,
             flexWrap: "wrap",
-            flexBasis: 1,
+            marginRight: MARGIN.m4,
+            // flexShrink: -10,
           }}
         >
           {item.title}
@@ -74,7 +75,7 @@ const ViewedScreen = () => {
           </Text>
         </Text>
 
-        <View style={{ width: "25%" }}>
+        <View style={{ width: "25%", flex: 1 }}>
           <TouchableOpacity
             style={{ flexDirection: "row", alignItems: "center" }}
             onPress={() => showDates(item.movieId)}
@@ -187,7 +188,7 @@ const ViewedScreen = () => {
       <View style={styles.headerList}>
         <Text></Text>
 
-        <Pressable onPress={() => orderNameMovies()} style={{ flex: 2 }}>
+        <Pressable onPress={() => orderNameMovies()} style={{ flex: 2.5 }}>
           {({ pressed }) => (
             <Text
               style={{

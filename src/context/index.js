@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "../api/api";
 
 import MovieData from "../data/results.json";
+import { handleGetBase64, handleSaveBase64 } from "../services/fileSystemSave";
 
 const MoviesContext = React.createContext({});
 
@@ -12,6 +13,7 @@ const MoviesProvider = (props) => {
   const [inputText, setInputText] = useState("");
   const [textSearched, setTextSearched] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+  const [toggleFilter, setToggleFilter] = useState(false);
   const [error404, setError404] = useState(false);
   const [justOne, setJustOne] = useState(true);
   const [savedMovies, setSavedMovies] = useState([]);
@@ -114,15 +116,80 @@ const MoviesProvider = (props) => {
   };
 
   const saveMovie = (movie) => {
+    console.log('saving movie')
     let newMovie = {
       ...movie,
+      imgKey: movie.title.replace(/( )/gm, "")+Math.floor(Math.random(8)*(10000)),
+      savedDate: Date(),
       movieId: movie.title.replace(/( )/gm, "") + movie.year,
     };
     if (savedMovies?.find((movie) => movie.movieId === newMovie.movieId)) {
       return "error";
     } else {
-      setSavedMovies([...savedMovies, newMovie]);
+      handleSaveBase64(newMovie.imgKey, newMovie.url_img)
+      let movieWoutBase64 = {...newMovie, url_img: 'data:image/jpeg;base64,'}
+      console.log(movieWoutBase64)
+      setSavedMovies([...savedMovies, movieWoutBase64]);
+      console.log(newMovie.imgKey)
       return "saved";
+    }
+  };
+
+  const sortNameSavedMovies = (state) => {
+    console.log("sorted by name");
+    if (state) {
+      setSavedMovies(
+        savedMovies.sort((a, b) => {
+          if (a.title == b.title) {
+            return 0;
+          }
+          if (a.title > b.title) {
+            return -1;
+          }
+          return 1;
+        })
+      );
+    } else if (!state) {
+      setSavedMovies(
+        savedMovies.sort((a, b) => {
+          if (a.title == b.title) {
+            return 0;
+          }
+          if (a.title < b.title) {
+            return -1;
+          }
+          return 1;
+        })
+      );
+    }
+  };
+
+  const sortSavedDateMovies = (state) => {
+    console.log("sorted by save date");
+    if (state) {
+      setSavedMovies(
+        savedMovies.sort((a, b) => {
+          if (a.savedDate == b.savedDate) {
+            return 0;
+          }
+          if (a.savedDate > b.savedDate) {
+            return -1;
+          }
+          return 1;
+        })
+      );
+    } else if (!state) {
+      setSavedMovies(
+        savedMovies.sort((a, b) => {
+          if (a.savedDate == b.savedDate) {
+            return 0;
+          }
+          if (a.savedDate < b.savedDate) {
+            return -1;
+          }
+          return 1;
+        })
+      );
     }
   };
 
@@ -133,7 +200,7 @@ const MoviesProvider = (props) => {
   };
 
   const handleWatchedMovie = (movieId) => {
-    // console.log(movieId)
+    console.log('handle watched movie')
     let whichMovie = savedMovies.find((movie) => movie.movieId === movieId);
     if (watchedMovies.find((movie) => movie.movieId === whichMovie.movieId)) {
       setWatchedMovies(
@@ -246,9 +313,17 @@ const MoviesProvider = (props) => {
     }
   };
 
-  const deleteAllViewedMovies = () => {
+  const deleteAllViewedMovies = useCallback(() => {
     setWatchedMovies([])
-  }
+    console.log('ALL WATCHED MOVIES DELETED!!')
+  }, [watchedMovies])
+
+  const deleteAllSavedMovies = useCallback(() => {
+    setSavedMovies([])
+    console.log('ALL SAVED MOVIES DELETED!!')
+
+
+  }, [savedMovies])
 
   const deletingJustAdded = () => {
     if(!watchedMovies.some(movie => movie.justAdded === true)) return console.log('nothing to set')
@@ -262,6 +337,8 @@ const MoviesProvider = (props) => {
       })
     )
   }
+
+
 
   return (
     <MoviesContext.Provider
@@ -284,7 +361,12 @@ const MoviesProvider = (props) => {
         sortNameMovies,
         sortDurationMovies,
         deletingJustAdded,
-        deleteAllViewedMovies
+        deleteAllViewedMovies,
+        deleteAllSavedMovies,
+        toggleFilter,
+        setToggleFilter,
+        sortNameSavedMovies,
+        sortSavedDateMovies
       }}
     >
       {props.children}

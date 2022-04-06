@@ -16,6 +16,8 @@ import { COLORS, MARGIN, SIZES } from "../constants/theme";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { MoviesContext } from "../src/context";
 import SearchItem from "./SearchItem";
+import Animated, {LightSpeedInLeft, LightSpeedOutRight, Layout} from 'react-native-reanimated';
+
 
 
 
@@ -118,7 +120,7 @@ function SearchScreen() {
           color={COLORS.pink}
         />
       ) : null}
-      <FlatList
+      <Animated.FlatList
         data={data?.results}
         renderItem={({ item }) => (
           <SearchItem
@@ -132,7 +134,8 @@ function SearchScreen() {
             savingMovie={savingMovie}
           />
         )}
-        keyExtractor={(item) => item.title + item.year + item.director}
+        keyExtractor={(item) => item.title + item.year + item.director + Math.floor(Math.random(8)*(10000))}
+        itemLayoutAnimation={Layout.springify()}
       />
     </SafeAreaView>
   );
