@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "../api/api";
 
 import MovieData from "../data/results.json";
-import { handleGetBase64, handleSaveBase64 } from "../services/fileSystemSave";
+import { handleDeleteAllFiles, handleDeleteOneFile, handleGetBase64, handleSaveBase64 } from "../services/fileSystemSave";
 
 const MoviesContext = React.createContext({});
 
@@ -194,7 +194,8 @@ const MoviesProvider = (props) => {
   };
 
   const deleteMovie = (movieId) => {
-    let { title } = savedMovies?.find((movie) => movie.movieId === movieId);
+    let { title, imgKey } = savedMovies?.find((movie) => movie.movieId === movieId);
+    handleDeleteOneFile(imgKey)
     setSavedMovies(savedMovies.filter((movies) => movies.movieId !== movieId));
     return `${title} — Eliminada`;
   };
@@ -320,9 +321,8 @@ const MoviesProvider = (props) => {
 
   const deleteAllSavedMovies = useCallback(() => {
     setSavedMovies([])
+    handleDeleteAllFiles()
     console.log('ALL SAVED MOVIES DELETED!!')
-
-
   }, [savedMovies])
 
   const deletingJustAdded = () => {

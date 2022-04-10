@@ -12,7 +12,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import HomeScreen from "../screens/HomeScreen";
 import SearchScreen from "../screens/SearchScreen";
-import { COLORS, TOTAL_HEIGHT, TOTAL_WIDTH  } from "../constants/theme";
+import { COLORS, SIZES, TOTAL_HEIGHT, TOTAL_WIDTH  } from "../constants/theme";
 import DetailsScreen from "../screens/DetailsScreen";
 import { MoviesContext } from "../src/context";
 import ViewedScreen from "../screens/ViewedScreen";
@@ -37,10 +37,6 @@ function HomeTabs({ navigation }) {
     setHandleDeleteJustAdded(handleDeleteJustAdded + 1)
   }
 
-  const handleFilter = () => {
-    setToggleFilter(state => !state)
-  }
-
   useEffect(() => {
     if(handleDeleteJustAdded === 4){
       deletingJustAdded()
@@ -56,7 +52,7 @@ function HomeTabs({ navigation }) {
           marginBottom: Dimensions.get("window").height * 0.012,
           marginTop: Dimensions.get("window").height * 0.004,
         },
-        tabBarLabelStyle: { fontSize: 12 },
+        tabBarLabelStyle: { fontSize: SIZES.h5 },
         tabBarStyle: { height: Dimensions.get("window").width * 0.15 },
         headerShown: true,
         headerStyle: {backgroundColor: 'black'} ,
@@ -141,7 +137,7 @@ function HomeTabs({ navigation }) {
                 name="menu"
                 color={COLORS.white}
                 size={30}
-                onPress={() => navigation.openDrawer()}
+                onPress={() => {navigation.openDrawer(), textInput?.current.blur()} }
               />
             </TouchableOpacity>
           ),

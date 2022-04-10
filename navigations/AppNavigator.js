@@ -22,8 +22,10 @@ import {
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import HomeNavigator from "./HomeNavigator";
 import About from "../screens/About";
-import { COLORS, SIZES, TOTAL_HEIGHT } from "../constants/theme";
+import { COLORS, SIZES, TOTAL_HEIGHT, TOTAL_WIDTH } from "../constants/theme";
 import { MoviesContext } from "../src/context";
+import PopularNavigator from "./PopularNavigator";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const Drawer = createDrawerNavigator();
 
@@ -91,12 +93,12 @@ function CustomDrawerContent(props) {
       <DrawerItemList {...props} />
 
       <View
-        style={{ justifyContent: "space-between", height: TOTAL_HEIGHT * 0.72 }}
+        style={{ justifyContent: "flex-end", height: TOTAL_HEIGHT * 0.65 }}
       >
-        <DrawerItem
+        {/* <DrawerItem
           label="Información"
           onPress={() => props.navigation.navigate("Vistas")}
-        />
+        /> */}
         <View>
           <DrawerItem
             label={() => (
@@ -144,7 +146,7 @@ function CustomDrawerContent(props) {
   );
 }
 
-const AppNavigator = () => {
+const AppNavigator = ({navigation}) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar
@@ -162,6 +164,7 @@ const AppNavigator = () => {
             drawerStatusBarAnimation: "slide",
             drawerActiveTintColor: "#dad8d9",
             drawerItemStyle: { marginVertical: 10 },
+            keyboardDismissMode: 'on-drag'
           }}
           drawerContent={(props) => <CustomDrawerContent {...props} />}
         >
@@ -184,9 +187,11 @@ const AppNavigator = () => {
             component={HomeNavigator}
           />
           <Drawer.Screen
-            name="About"
+            name="Popular"
             options={{
-              headerShown: true,
+              headerShown: false,
+
+
               drawerLabel: () => (
                 <Text style={{ color: COLORS.lightGray, marginLeft: -20 }}>
                   Recomendados para ver
@@ -196,6 +201,25 @@ const AppNavigator = () => {
                 <MaterialCommunityIcons
                   name="star-face"
                   color={COLORS.gold}
+                  size={SIZES.h2}
+                />
+              ),
+            }}
+            component={PopularNavigator}
+          />
+          <Drawer.Screen
+            name="About"
+            options={{
+              headerShown: true,
+              drawerLabel: () => (
+                <Text style={{ color: COLORS.lightGray, marginLeft: -20 }}>
+                  About
+                </Text>
+              ),
+              drawerIcon: () => (
+                <MaterialCommunityIcons
+                  name="information"
+                  color={COLORS.lightGray}
                   size={SIZES.h2}
                 />
               ),

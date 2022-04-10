@@ -31,6 +31,8 @@ import Animated, {
   BounceOutDown,
   StretchOutY,
   BounceOutRight,
+  FadeOutRight,
+  FadeOut,
 } from "react-native-reanimated";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { handleGetBase64 } from "../src/services/fileSystemSave";
@@ -67,7 +69,7 @@ const ItemSavedMovies = ({ item, handleInfo, handleCheck, handleWarning }) => {
   return (
     <Animated.View
       entering={LightSpeedInLeft}
-      exiting={BounceOutRight}
+      exiting={FadeOutRight}
       layout={Layout.springify()}
       style={styles.itemContainer}
     >
