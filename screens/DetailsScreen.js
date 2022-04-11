@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
     height: Dimensions.get("window").height * 0.55,
   },
   ratingYearContainer: {
-    flex: 1,
+    flex: 1.3,
     alignItems: "center",
     justifyContent: "flex-start",
     height: "100%",
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
     marginTop: MARGIN.m5,
   },
   whereWatch: {
-    flex: 1.3,
+    flex: 1.6,
     marginTop: MARGIN.m5,
     padding: MARGIN.m3,
     // borderWidth: 3,

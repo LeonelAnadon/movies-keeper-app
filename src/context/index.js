@@ -19,7 +19,12 @@ const MoviesProvider = (props) => {
   const [textSearched, setTextSearched] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [isSearchingPopular, setIsSearchingPopular] = useState(false);
-  const [netflixPopular, setNetflixPopular] = useState([])
+  const [netflixPopular, setNetflixPopular] = useState([]);
+  const [hboMaxPopular, setHboMaxPopular] = useState([]);
+  const [disneyPlusPopular, setDisneyPlusPopular] = useState([]);
+  const [amazonPrimePopular, setAmazonPrimePopular] = useState([]);
+  const [starPlusPopular, setStarPlusPopular] = useState([]);
+
   const [toggleFilter, setToggleFilter] = useState(false);
   const [error404, setError404] = useState(false);
   const [error404Popular, setError404Popular] = useState(false);
@@ -127,22 +132,32 @@ const MoviesProvider = (props) => {
   const searchPopular = async (tag) => {
     try {
       console.log(`Buscando popular...`);
-      setNetflixPopular()
+      if(tag === 'netflix') setNetflixPopular([])
+      if(tag === 'hbo-max') setHboMaxPopular([])
       setIsSearchingPopular(true);
       setError404Popular();
-      const response = await api.get(`/popular/${tag}`);
-      if (response.data.response === "error: 404") {
+      const {
+        data: { response },
+      } = await api.get(`/popular/${tag}`);
+      if (response === "error: 404") {
         setIsSearchingPopular(false);
         setError404Popular(true);
-        setNetflixPopular()
+        setNetflixPopular();
         console.log("error");
       } else {
         setIsSearchingPopular(false);
-        setNetflixPopular(response.data.response.results.movieData)
-        console.log('successful')
+        console.log(response.tag)
+        if (response.tag === "hbo-max") {
+          setHboMaxPopular(response.results.movieData);
+        } else if (response.tag === "netflix") {
+          setNetflixPopular(response.results.movieData);
+        }
+        console.log("successful");
       }
     } catch (err) {
       console.log(err);
+    }finally {
+      return 'ok'
     }
   };
 
@@ -243,7 +258,7 @@ const MoviesProvider = (props) => {
       let setData = watchedMovies.map((movie) => {
         if (movie.movieId === whichMovie.movieId) {
           let { date } = movie;
-          return { ...movie , date: [...date, new Date()] };
+          return { ...movie, date: [...date, new Date()] };
         } else {
           return movie;
         }
@@ -415,7 +430,11 @@ const MoviesProvider = (props) => {
         sortNameSavedMovies,
         sortSavedDateMovies,
         searchPopular,
-        netflixPopular
+        netflixPopular,
+        hboMaxPopular,
+        disneyPlusPopular,
+        amazonPrimePopular,
+        starPlusPopular,
       }}
     >
       {props.children}

@@ -15,6 +15,7 @@ const strImgs = {
   appleitunes: require("../images/appletunes.jpg"),
   appletvplus: require('../images/appletvplus.jpg'),
   clarovideo: require("../images/clarovideo.jpg"),
+  directvgo: require('../images/directvgo.jpg'),
   disneyplus: require("../images/disneymas.jpg"),
   googleplaymovies: require("../images/googleplay.jpg"),
   hbogo: require("../images/hbogo.jpg"),
@@ -39,18 +40,18 @@ const StrList = ({ item }) => {
         style={{
           flex: 1,
           marginBottom: MARGIN.m1,
-          justifyContent: "center",
-          alignItems: "center",
-          flexWrap: "wrap",
+          // overflow: 'scroll',
+          // flexWrap: 'wrap'
         }}
       >
         <Text style={styles.streamingTitle}>
           {Object.keys(item) ? Object.keys(item)[0] : null}
         </Text>
+        <View style={{flex: 1, maxWidth: item[Object.keys(item)[0]].length === 1 ? '100%' : '75%'}}>
         <FlatList
           data={item[Object.keys(item)[0]]}
           renderItem={({ item }) => (
-            <View style={{ alignItems: "center", justifyContent: "center" }}>
+            <View style={{ alignItems: "center", justifyContent: "center", maxWidth: '100%' }}>
               <Image
                 style={styles.imgStyle}
                 resizeMode="center"
@@ -63,7 +64,9 @@ const StrList = ({ item }) => {
           keyExtractor={(v, i) => v + i}
           horizontal={true}
           style={{ width: "100%" }}
+          fadingEdgeLength={1}
         />
+        </View>
       </View>
       <View style={{ flex: 1, marginBottom: MARGIN.m1 }}>
         <Text style={styles.streamingTitle}>
