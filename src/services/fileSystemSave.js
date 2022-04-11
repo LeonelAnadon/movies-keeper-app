@@ -27,18 +27,18 @@ export const handleGetBase64 = async (imgKey) => {
     let convertBase64 = `data:image/jpeg;base64,${imgUrisera}`;
     return convertBase64;
   } catch (err) {
-    console.log(err);
+    console.log('some error by getting base 64');
   }
 };
 
 export const handleReadDirectory = async() => {
   try {
     await ensureDirExists();
+
     let data = await FileSystem.readDirectoryAsync(imagePath);
-    console.log(data);
     return data;
   }catch(err) {
-    console.log(err)
+    console.log('some error by reading directory')
   }
 };
 

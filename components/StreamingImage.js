@@ -31,7 +31,7 @@ const StrList = ({ item }) => {
 
 
 
-  console.log(item);
+  // console.log(item);
 
   return (
     <View style={styles.strContainer}>
@@ -41,8 +41,6 @@ const StrList = ({ item }) => {
           marginBottom: MARGIN.m1,
           justifyContent: "center",
           alignItems: "center",
-          // flexDirection: "row",
-          // maxWidth: TOTAL_WIDTH * 0.26,
           flexWrap: "wrap",
         }}
       >
@@ -116,15 +114,11 @@ const StrList = ({ item }) => {
 };
 
 const StreamingImage = ({ stream }) => {
-  const show = () => {
-    alert(JSON.stringify(stream[0]["Suscripción"]));
-  };
+
 
   return (
     <View style={styles.streamingContainer}>
       <StrList item={stream[0]} />
-
-      {/* <Button title="Show" onPress={() => show()} /> */}
     </View>
   );
 };

@@ -23,33 +23,27 @@ const DetailsScreen = ({ navigation, route }) => {
   const [item, setItem] = useState({});
   const [dataImg, setDataImg] = useState("");
 
-  const getImgGo = useCallback(async () => {
+  const getImgGo = async () => {
+    
     try {
-
         let data = await handleGetBase64(item.imgKey);
         setDataImg(data);
-
     } catch (err) {
-      // console.log(err);
+      console.log("something went wrong getting base64");
     }
-  }, [item, dataImg]);
+  };
 
   useEffect(() => {
     if (!movieId) return navigation.navigate("Guardadas");
     setItem(() => savedMovies.find((movie) => movie.movieId === movieId));
+
+    return () => setItem(), setDataImg()
   }, []);
 
   useEffect(() => {
     if (!dataImg === "") return;
-
     getImgGo();
-  }, []);
-
-  useEffect(() => {
-    if (!dataImg === "") return;
-
-    getImgGo();
-  }, [item, dataImg]);
+  }, [item]);
 
   if (Object.entries(item).length < 2) {
     return (

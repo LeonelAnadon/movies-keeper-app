@@ -11,7 +11,7 @@ import DisneyPlusScreen from "../screens/DisneyPlusScreen";
 import { createStackNavigator } from "@react-navigation/stack";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-
+import { MoviesContext } from "../src/context";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
@@ -21,6 +21,7 @@ const PopularTopTabs = () => {
     <Tab.Navigator
       screenOptions={{
         tabBarLabelStyle: { fontSize: 12 },
+        tabBarIndicatorStyle: { backgroundColor: COLORS.pink },
       }}
     >
       <Tab.Screen name="Netflix" component={NetflixScreen} />
@@ -33,13 +34,20 @@ const PopularTopTabs = () => {
 };
 
 const PopularNavigator = ({ navigation }) => {
+
+
+  useEffect(() => {
+    console.log("POPULAR SCREEN TRIGGERED!");
+  }, []);
+
   return (
-    <Stack.Navigator initialRouteName="Popular">
+    <Stack.Navigator>
       <Stack.Group>
         <Stack.Screen
-          name="Popular"
+          name="PopularScreen"
           component={PopularTopTabs}
           options={{
+            headerTitle: 'Popular',
             headerShown: true,
             headerLeft: () => (
               <TouchableOpacity style={{ marginLeft: TOTAL_WIDTH * 0.03 }}>

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -222,6 +222,7 @@ function HomeScreen({ navigation }) {
   const appContext = useContext(MoviesContext);
   const { savedMovies, deleteMovie, handleWatchedMovie, sortNameSavedMovies, sortSavedDateMovies } = appContext;
   const [sort, setSort] = useState(false);
+  const [nowMemo, setNowMemo] = useState(false)
 
   const handleInfo = (movieId) => {
     console.log(`Information of ${movieId}`);
@@ -266,6 +267,8 @@ function HomeScreen({ navigation }) {
     sortSavedDateMovies(sort)
   }
 
+  
+  
   const renderItem = ({ item }) => {
     return (
       <ItemSavedMovies
@@ -277,14 +280,16 @@ function HomeScreen({ navigation }) {
       />
     );
   };
+  //  const memoizedValue = useMemo(() => renderItem, [savedMovies]);
+  const memoizedValue = useCallback(({ item }) => renderItem({item}), [savedMovies, handleCheck]);
 
-  const handleFilter = () => {};
+
 
   return (
     <SafeAreaView style={styles.container}>
       <Animated.FlatList
         data={savedMovies}
-        renderItem={renderItem}
+        renderItem={memoizedValue}
         keyExtractor={(movie) => movie.movieId}
         itemLayoutAnimation={Layout.springify()}
         snapToInterval={350 + MARGIN.m2}

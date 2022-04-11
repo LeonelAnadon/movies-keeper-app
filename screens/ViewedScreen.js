@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -8,7 +8,7 @@ import {
   Dimensions,
   Pressable,
   Modal,
-  TouchableOpacity
+  TouchableOpacity,
 } from "react-native";
 import { COLORS, MARGIN, PADDING, SIZES } from "../constants/theme";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -88,7 +88,7 @@ const ViewedScreen = () => {
               }}
             >
               {" "}
-              {item.times}
+              {item.date.length}
               {/* <Text style={{ color: COLORS.lightGray, fontWeight: 'bold' }}></Text> */}
             </Text>
             <MaterialCommunityIcons
@@ -103,14 +103,65 @@ const ViewedScreen = () => {
     );
   };
 
+  const renderItem = ({ item }) => {
+    return (
+      <View style={styles.dateContainer}>
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            marginRight: MARGIN.m1,
+          }}
+        >
+          <MaterialCommunityIcons
+            name="calendar"
+            color={COLORS.lightGray}
+            size={SIZES.h4}
+          />
+        </View>
+        <Text
+          style={{
+            color: COLORS.white,
+            fontSize: SIZES.h3,
+            textAlign: "center",
+          }}
+        >
+          {formatDate(item)}
+        </Text>
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            marginLeft: MARGIN.m1,
+          }}
+        >
+          <MaterialCommunityIcons
+            name="clock"
+            color={COLORS.lightGray}
+            size={SIZES.h4}
+          />
+        </View>
+      </View>
+    );
+  };
+
+  useEffect(() => {
+    console.log('watched movies cambio')
+  }, [watchedMovies])
+  
+
+  // const memoizedValueModal = useMemo(() => renderItem, [modalInfo]);
+  const memoizedValueItem = useCallback(({ item }) => Item({item}), [watchedMovies]);
+
+
   return (
     <View style={styles.container}>
-      {/* <Button title="show" onPress={() => alert(JSON.stringify(modalInfo))} /> */}
+      {/* <Button title="show" onPress={() => alert(JSON.stringify(watchedMovies))} /> */}
       {
         //? MODAL
       }
       <Modal
-        animationType="slide"
+        animationType='fade'
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
@@ -124,7 +175,7 @@ const ViewedScreen = () => {
                 color: COLORS.white,
                 fontSize: SIZES.h2,
                 textAlign: "center",
-                marginBottom: MARGIN.m3
+                marginBottom: MARGIN.m3,
               }}
             >
               {modalInfo.title}
@@ -174,8 +225,13 @@ const ViewedScreen = () => {
               }}
               keyExtractor={(date, i) => date + i}
             />
-            <TouchableOpacity style={styles.closeModalBtn} onPress={() => setModalVisible(!modalVisible)}>
-                <Text style={{color:COLORS.lightGray, fontSize: SIZES.h4}}>Cerrar</Text>
+            <TouchableOpacity
+              style={styles.closeModalBtn}
+              onPress={() => setModalVisible(!modalVisible)}
+            >
+              <Text style={{ color: COLORS.lightGray, fontSize: SIZES.h4 }}>
+                Cerrar
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -294,7 +350,7 @@ const styles = StyleSheet.create({
     // borderRadius: 8,
   },
   justAddedStyle: {
-    backgroundColor: COLORS.green,
+    backgroundColor: COLORS.pink,
     paddingVertical: MARGIN.m7,
   },
   modalCenterView: {
@@ -331,7 +387,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.darkGray,
     marginVertical: MARGIN.m4,
     padding: 10,
-  }
+  },
 });
 
 export default ViewedScreen;
