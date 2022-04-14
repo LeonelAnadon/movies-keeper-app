@@ -42,7 +42,10 @@ const ViewedScreen = () => {
   };
   const showDates = (movieId) => {
     console.log(movieId);
-    setModalInfo(watchedMovies.find((movie) => movie.movieId === movieId));
+    let modalData = watchedMovies.find((movie) => movie.movieId === movieId)
+    modalData.date.reverse()
+    setModalInfo(modalData);
+
     setModalVisible(!modalVisible);
   };
 

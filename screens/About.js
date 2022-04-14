@@ -27,7 +27,7 @@ const About = (props) => {
       <Button title="SHOW IMAGE" onPress={() => handleTest()} />
       <Image
         source={{
-          uri: "https://images.justwatch.com/poster/228853389/s166/merli.webp",
+          uri: "https://images.justwatch.com/poster/251148984/s592/the-amazing-spider-man-2-el-poder-de-electro.webp" ? 'https://images.justwatch.com/poster/251148984/s592/the-amazing-spider-man-2-el-poder-de-electro.webp' : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAAEXRFWHRTb2Z0d2FyZQBwbmdjcnVzaEB1SfMAAABQSURBVGje7dSxCQBACARB+2/ab8BEeQNhFi6WSYzYLYudDQYGBgYGBgYGBgYGBgYGBgZmcvDqYGBgmhivGQYGBgYGBgYGBgYGBgYGBgbmQw+P/eMrC5UTVAAAAABJRU5ErkJggg==',
         }}
         style={{ width: TOTAL_WIDTH * 0.4, height: TOTAL_HEIGHT * 0.3 }}
       />

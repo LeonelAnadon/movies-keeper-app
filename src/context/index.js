@@ -24,10 +24,11 @@ const MoviesProvider = (props) => {
   const [disneyPlusPopular, setDisneyPlusPopular] = useState([]);
   const [amazonPrimePopular, setAmazonPrimePopular] = useState([]);
   const [starPlusPopular, setStarPlusPopular] = useState([]);
+  const [popularFetched, setPopularFetched] = useState([])
 
   const [toggleFilter, setToggleFilter] = useState(false);
   const [error404, setError404] = useState(false);
-  const [error404Popular, setError404Popular] = useState(false);
+  const [error404Popular, setError404Popular] = useState('');
   const [justOne, setJustOne] = useState(true);
   const [savedMovies, setSavedMovies] = useState([]);
   const [watchedMovies, setWatchedMovies] = useState([]);
@@ -132,8 +133,8 @@ const MoviesProvider = (props) => {
   const searchPopular = async (tag) => {
     try {
       console.log(`Buscando popular...`);
-      if(tag === 'netflix') setNetflixPopular([])
-      if(tag === 'hbo-max') setHboMaxPopular([])
+      if (tag === "netflix") setNetflixPopular([]);
+      if (tag === "hbo-max") setHboMaxPopular([]);
       setIsSearchingPopular(true);
       setError404Popular();
       const {
@@ -141,12 +142,13 @@ const MoviesProvider = (props) => {
       } = await api.get(`/popular/${tag}`);
       if (response === "error: 404") {
         setIsSearchingPopular(false);
-        setError404Popular(true);
-        setNetflixPopular();
+        if (tag === "netflix") setError404Popular('netflix'), setNetflixPopular();
+        if (tag === "hbo-max") setError404Popular('hbo-max'), setHboMaxPopular()
+       
         console.log("error");
       } else {
         setIsSearchingPopular(false);
-        console.log(response.tag)
+        console.log(response.tag);
         if (response.tag === "hbo-max") {
           setHboMaxPopular(response.results.movieData);
         } else if (response.tag === "netflix") {
@@ -155,9 +157,27 @@ const MoviesProvider = (props) => {
         console.log("successful");
       }
     } catch (err) {
-      console.log(err);
-    }finally {
-      return 'ok'
+      return 'error'
+    } finally {
+      return "ok";
+    }
+  };
+
+  const findPopular = async (url) => {
+    // if (!url) return;
+    try {
+      const {
+        data: { response },
+      } = await api.post(`/findMovie/`, {url});
+      if (response === "error: 404") {
+        return {res: 'error'}
+      } else {
+        // return {...response, res: 'ok'}
+        setPopularFetched(response)
+        return {res: 'ok'}
+      }
+    } catch (err) {
+      return {res: 'error'}
     }
   };
 
@@ -435,6 +455,8 @@ const MoviesProvider = (props) => {
         disneyPlusPopular,
         amazonPrimePopular,
         starPlusPopular,
+        findPopular,
+        popularFetched
       }}
     >
       {props.children}

@@ -164,7 +164,8 @@ const AppNavigator = ({navigation}) => {
             drawerStatusBarAnimation: "slide",
             drawerActiveTintColor: "#dad8d9",
             drawerItemStyle: { marginVertical: 10 },
-            keyboardDismissMode: 'on-drag'
+            keyboardDismissMode: 'on-drag',
+            swipeEnabled: false
           }}
           drawerContent={(props) => <CustomDrawerContent {...props} />}
         >

@@ -15,12 +15,14 @@ export const COLORS = {
   red: '#D91438',
   orange: '#F9B243',
   green: '#60A679',
+  darkBlue: '#060d17'
 };
 
 export const SIZES = {
   biggerText: 50,
   bigText: 40,
   h1: 30,
+  h2m: 25,
   h2: 22,
   h3: 16,
   h4: 14,

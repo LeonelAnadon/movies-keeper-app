@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef, useEffect } from "react";
+import React, { useContext, useState, useRef, useEffect, lazy } from "react";
 import { Animated, StyleSheet, Text, View, Button, Image } from "react-native";
 import { COLORS, TOTAL_HEIGHT, TOTAL_WIDTH } from "../constants/theme";
 
@@ -12,6 +12,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { MoviesContext } from "../src/context";
+import PopularDetailsScreen from "../screens/PopularDetailsScreen";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
@@ -63,11 +64,11 @@ const PopularNavigator = ({ navigation }) => {
         />
       </Stack.Group>
       <Stack.Group screenOptions={{ presentation: "modal" }}>
-        {/* <Stack.Screen
-          name="details"
-          component={DetailsScreen}
+        <Stack.Screen
+          name="PopularDetails"
+          component={PopularDetailsScreen}
           options={{ animationTypeForReplace: "pop", headerShown: false }}
-        /> */}
+        />
       </Stack.Group>
     </Stack.Navigator>
   );

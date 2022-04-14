@@ -23,19 +23,12 @@ import {
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Animated, {
   LightSpeedInLeft,
-  LightSpeedOutRight,
   Layout,
-  BounceInLeft,
-  FlipInXDown,
-  BounceOutLeft,
-  BounceOutDown,
-  StretchOutY,
-  BounceOutRight,
   FadeOutRight,
-  FadeOut,
 } from "react-native-reanimated";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { handleGetBase64 } from "../src/services/fileSystemSave";
+import { formatDateWithoutTime } from "../src/utils/formatDate";
 
 const ItemSavedMovies = ({ item, handleInfo, handleCheck, handleWarning }) => {
   const [dataImg, setDataImg] = useState("");
@@ -116,10 +109,10 @@ const ItemSavedMovies = ({ item, handleInfo, handleCheck, handleWarning }) => {
                 ? COLORS.red
                 : COLORS.orange
             }
-            size={SIZES.h2}
+            size={SIZES.h2m}
             style={{ marginRight: MARGIN.m2 }}
           />
-          <Text style={[styles.defaultText, { fontSize: SIZES.h3 }]}>
+          <Text style={[styles.defaultText, { fontSize: SIZES.h2 }]}>
             {item.rating}
           </Text>
         </View>
@@ -187,7 +180,7 @@ const ItemSavedMovies = ({ item, handleInfo, handleCheck, handleWarning }) => {
             style={[
               styles.defaultText,
               {
-                fontSize: SIZES.h3,
+                fontSize: SIZES.h4,
                 color: COLORS.lightGray,
                 textAlign: "center",
               },
@@ -201,6 +194,31 @@ const ItemSavedMovies = ({ item, handleInfo, handleCheck, handleWarning }) => {
               ]}
             >
               {`${item.runing_time}`}
+            </Text>
+          </Text>
+        </View>
+        {
+          //? SAVED AT
+        }
+        <View style={[styles.centerRow, { marginTop: MARGIN.m2 }]}>
+          <Text
+            style={[
+              styles.defaultText,
+              {
+                fontSize: SIZES.h4,
+                color: COLORS.lightGray,
+                textAlign: "center",
+              },
+            ]}
+          >
+            Guardada:{" "}
+            <Text
+              style={[
+                styles.defaultText,
+                { fontSize: SIZES.h4, color: COLORS.white },
+              ]}
+            >
+              {`${formatDateWithoutTime(item.savedDate)}`}
             </Text>
           </Text>
         </View>
@@ -274,6 +292,7 @@ const styles = StyleSheet.create({
   descContainer: {
     flex: 1.5,
     padding: MARGIN.m1,
+    justifyContent: 'space-evenly'
   },
   movieTitle: {
     marginTop: MARGIN.m3,
@@ -296,7 +315,9 @@ const styles = StyleSheet.create({
   },
   infoBtn: {
     alignItems: "center",
-    backgroundColor: COLORS.darkGray,
+    // backgroundColor: COLORS.darkGray,
+    borderWidth: 1,
+    borderColor: COLORS.darkGray,
     marginVertical: MARGIN.m4,
     padding: 10,
   },

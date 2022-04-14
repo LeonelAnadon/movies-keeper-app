@@ -38,7 +38,7 @@ function HomeTabs({ navigation }) {
   }
 
   useEffect(() => {
-    if(handleDeleteJustAdded === 4){
+    if(handleDeleteJustAdded === 1){
       deletingJustAdded()
       setHandleDeleteJustAdded(0)
     }
@@ -53,11 +53,12 @@ function HomeTabs({ navigation }) {
           marginTop: Dimensions.get("window").height * 0.004,
         },
         tabBarLabelStyle: { fontSize: SIZES.h5 },
-        tabBarStyle: { height: Dimensions.get("window").width * 0.15 },
+        tabBarStyle: { height: TOTAL_WIDTH * 0.15 },
         headerShown: true,
         headerStyle: {backgroundColor: 'black'} ,
         tabBarActiveTintColor: COLORS.pink,
         tabBarInactiveTintColor: COLORS.lightGray,
+        tabBarStyle:{ backgroundColor: COLORS.black, height: TOTAL_HEIGHT * 0.07}
       }}
     >
       {
