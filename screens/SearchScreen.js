@@ -122,6 +122,7 @@ function SearchScreen() {
       ) : null}
       <Animated.FlatList
         data={data?.results}
+        refreshing={isSearching}
         renderItem={({ item }) => (
           <SearchItem
             title={item.title}
@@ -132,20 +133,23 @@ function SearchScreen() {
             imgUri={item.url_img}
             allItem={item}
             savingMovie={savingMovie}
+            genres={item.genres}
           />
         )}
         keyExtractor={(item) => item.title + item.year + item.director + Math.floor(Math.random(8)*(10000))}
         itemLayoutAnimation={Layout.springify()}
+        
       />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  // container: {
-  //   flex: 1,
-  //   // marginTop: StatusBar.currentHeight || 0,
-  // },
+  container: {
+    flex: 1,
+    // marginBottom: 20
+    // marginTop: StatusBar.currentHeight || 0,
+  },
   // item: {
   //   flexDirection: "row",
   //   backgroundColor: COLORS.gray,

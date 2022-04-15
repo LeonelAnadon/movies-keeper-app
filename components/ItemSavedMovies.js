@@ -144,27 +144,27 @@ const ItemSavedMovies = ({ item, handleInfo, handleCheck, handleWarning }) => {
         {
           //? STARRING
         }
-        <View style={[styles.centerRow, { marginTop: MARGIN.m1 }]}>
+        <View style={[styles.centerRow, { marginTop: 0 }]}>
           <Text
             ellipsizeMode="tail"
             numberOfLines={2}
             style={[
               styles.defaultText,
-              { color: COLORS.lightGray, fontSize: SIZES.h4 },
+              { color: COLORS.lightGray, fontSize: SIZES.h4, textAlign: 'center'},
             ]}
           >
-            Reparto:
+            {`Reparto: \n`}
             {item.starring.map((star, i) => {
               if (i === 0) {
                 return (
-                  <Text key={star + i} style={{ color: COLORS.white }}>
+                  <Text key={star + i} style={{ color: COLORS.white, fontWeight: 'normal' }}>
                     {" "}
                     {star}
                   </Text>
                 );
               }
               return (
-                <Text key={star + i} style={{ color: COLORS.white }}>
+                <Text key={star + i} style={{ color: COLORS.white, fontWeight: 'normal' }}>
                   {", "}
                   {star}
                 </Text>

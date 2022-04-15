@@ -32,6 +32,7 @@ export const SIZES = {
   body3: 16,
   body4: 14,
   body5: 12,
+  body6: 10,
 }
 
 export const MARGIN = {
@@ -50,6 +51,8 @@ export const PADDING = {
   pd3: 27,
   pd4: 25,
   pd5: 20,
+  pd6: 15,
+  pd7: 10,
 }
 export const TOTAL_HEIGHT = Dimensions.get('window').height
 export const TOTAL_WIDTH = Dimensions.get('window').width

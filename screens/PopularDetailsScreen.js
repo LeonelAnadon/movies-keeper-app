@@ -135,14 +135,46 @@ const PopularDetailsScreen = ({ route }) => {
           resizeMode="contain"
           onLoadStart={() => setLoadingImg(true)}
           onLoadEnd={() => setLoadingImg(false)}
-          fadeDuration={200}
+          fadeDuration={500}
           source={{
             uri: item?.url_img,
           }}
         />
       </View>
       <View style={[styles.container, styles.scrollDesc]}>
-        <ScrollView style={styles.scrollView}>
+        <ScrollView style={styles.scrollView} contentContainerStyle={{ justifyContent: "center" }}>
+        <View style={styles.detailsBtns}>
+            <TouchableOpacity
+              onPress={() => alert("OK")}
+              style={styles.plainBtn}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <MaterialCommunityIcons
+                  name="video"
+                  size={SIZES.h2}
+                  color={COLORS.white}
+                />
+                <Text style={{ color: COLORS.white, marginLeft: MARGIN.m4 }}>
+                  Ver trailer
+                </Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => alert('jeje')}
+              style={styles.plainBtn}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <MaterialCommunityIcons
+                  name="content-save"
+                  size={SIZES.h2}
+                  color={COLORS.white}
+                />
+                <Text style={{ color: COLORS.white, marginLeft: MARGIN.m4 }}>
+                  Guardar
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
           {
             //*? RIGHT COLUMN */
           }
@@ -180,6 +212,9 @@ const PopularDetailsScreen = ({ route }) => {
                   </Text>
                 </Text>
               </View>
+              {
+                //*? GENRES
+              }
               <View
                 style={{
                   justifyContent: "center",
@@ -257,6 +292,7 @@ const PopularDetailsScreen = ({ route }) => {
                   color: COLORS.notSoGray,
                   marginTop: MARGIN.m1,
                   fontWeight: "bold",
+                  textAlign: 'justify',
                 }}
               >
                 Reparto:
@@ -366,6 +402,27 @@ const styles = StyleSheet.create({
   },
   scrollDesc: {
     flexDirection: "row",
+  },
+  detailsBtns: {
+    height: TOTAL_HEIGHT * 0.05,
+    width: "85%",
+    alignSelf: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    marginTop: MARGIN.m1,
+  },
+  plainBtn: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: 'center',
+    backgroundColor: COLORS.black,
+    borderWidth: 1,
+    borderColor: COLORS.darkGray,
+    height: TOTAL_HEIGHT * 0.05,
+    // height: "100%",}
+    // padding: PADDING.pd6,
+    width: TOTAL_WIDTH * 0.4,
+    // width: '100%',
   },
   scrollView: {},
 });

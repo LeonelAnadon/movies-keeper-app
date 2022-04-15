@@ -6,19 +6,11 @@ import {
   Image,
   Dimensions,
   ScrollView,
-  ToastAndroid
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import StreamingImage from "../components/StreamingImage";
-import {
-  COLORS,
-  MARGIN,
-  PADDING,
-  SIZES,
-  TOTAL_HEIGHT,
-  TOTAL_WIDTH,
-} from "../constants/theme";
+import { COLORS, MARGIN, SIZES } from "../constants/theme";
 import { MoviesContext } from "../src/context";
 import { formatedTime } from "../src/utils/formatTime";
 import { formatDate } from "../src/utils/formatDate";
@@ -27,28 +19,17 @@ import { handleGetBase64 } from "../src/services/fileSystemSave";
 const DetailsScreen = ({ navigation, route }) => {
   const { movieId } = route.params;
   const appContext = useContext(MoviesContext);
-  const { savedMovies, handleWatchedMovie } = appContext;
+  const { savedMovies } = appContext;
   const [item, setItem] = useState({});
   const [dataImg, setDataImg] = useState("");
 
   const getImgGo = async () => {
+    
     try {
-      let data = await handleGetBase64(item.imgKey);
-      setDataImg(data);
+        let data = await handleGetBase64(item.imgKey);
+        setDataImg(data);
     } catch (err) {
       console.log("something went wrong getting base64");
-    }
-  };
-  const handleCheck = () => {
-    console.log(`${movieId} checked`);
-    const message = handleWatchedMovie(movieId);
-    if (message === "again") {
-      ToastAndroid.show(
-        `¡Felicidades! La has visto otra vez`,
-        ToastAndroid.SHORT
-      );
-    } else {
-      ToastAndroid.show(`Agregué ${message} a tus vistas`, ToastAndroid.SHORT);
     }
   };
 
@@ -56,7 +37,7 @@ const DetailsScreen = ({ navigation, route }) => {
     if (!movieId) return navigation.navigate("Guardadas");
     setItem(() => savedMovies.find((movie) => movie.movieId === movieId));
 
-    return () => setItem(), setDataImg();
+    return () => setItem(), setDataImg()
   }, []);
 
   useEffect(() => {
@@ -74,6 +55,7 @@ const DetailsScreen = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
+      
       <TouchableOpacity onPress={() => alert(JSON.stringify(item))}>
         <Text style={styles.title}>{item?.title}</Text>
       </TouchableOpacity>
@@ -100,43 +82,9 @@ const DetailsScreen = ({ navigation, route }) => {
           />
         )}
       </View>
+
       <View style={[styles.container, styles.scrollDesc]}>
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={{ justifyContent: "center" }}
-        >
-          <View style={styles.detailsBtns}>
-            <TouchableOpacity
-              onPress={() => alert("OK")}
-              style={styles.plainBtn}
-            >
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <MaterialCommunityIcons
-                  name="video"
-                  size={SIZES.h2}
-                  color={COLORS.white}
-                />
-                <Text style={{ color: COLORS.white, marginLeft: MARGIN.m4 }}>
-                  Ver trailer
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => handleCheck()}
-              style={styles.plainBtn}
-            >
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <MaterialCommunityIcons
-                  name="check"
-                  size={SIZES.h2}
-                  color={COLORS.white}
-                />
-                <Text style={{ color: COLORS.white, marginLeft: MARGIN.m4 }}>
-                  Visto
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
+        <ScrollView style={styles.scrollView}>
           {
             //*? RIGHT COLUMN */
           }
@@ -144,11 +92,30 @@ const DetailsScreen = ({ navigation, route }) => {
             <View style={[styles.ratingYearContainer]}>
               <View style={[styles.ratingContainer]}>
                 <MaterialCommunityIcons
-                  name={item?.rating !== "N/A" ? "star" : "cancel"}
-                  color={COLORS.gold}
+                  name={item.rating !== "N/A" ? "star" : "cancel"}
+                  color={
+                    item.rating === "N/A"
+                      ? COLORS.lightGray
+                      : item.rating >= "5.5"
+                      ? COLORS.gold
+                      : item.rating <= "4"
+                      ? COLORS.red
+                      : COLORS.orange
+                  }
                   size={SIZES.h1}
                 />
-                <Text style={[styles.ratingText]}>{item?.rating}</Text>
+                <Text style={[styles.ratingText]}>
+                  {item?.rating}
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      fontSize: SIZES.h3,
+                      color: COLORS.lightGray,
+                    }}
+                  >
+                    {item?.rating !== "N/A" && "/10"}
+                  </Text>
+                </Text>
               </View>
               {
                 //*? YEAR
@@ -166,60 +133,17 @@ const DetailsScreen = ({ navigation, route }) => {
                 //*? DURATION
               }
               <View style={{ justifyContent: "center" }}>
-                {!!item?.runing_time.match("min") ? (
-                  <Text style={[styles.yearText, { textAlign: "center" }]}>
-                    Duración:
-                    <Text style={{ color: COLORS.white, fontWeight: "bold" }}>
-                      {""}
-                      {` ${formatedTime(item?.runing_time)}`}
-                    </Text>
+                <Text style={[styles.yearText, { textAlign: "center" }]}>
+                  Duración:
+                  <Text style={{ color: COLORS.white, fontWeight: "bold" }}>
+                    {""}
+                    {`\n ${item?.runing_time}\n ${formatedTime(
+                      item?.runing_time
+                    )}`}
                   </Text>
-                ) : (
-                  <Text style={[styles.yearText, { textAlign: "center" }]}>
-                    Duración:
-                    <Text style={{ color: COLORS.white, fontWeight: "bold" }}>
-                      {" "}
-                      {item?.runing_time}
-                    </Text>
-                  </Text>
-                )}
+                </Text>
               </View>
-              {
-                //*? GENRES
-              }
-              {item?.genres ? (
-                <View
-                  style={{
-                    justifyContent: "center",
-                    maxWidth: TOTAL_WIDTH * 0.5,
-                  }}
-                >
-                  <Text style={[styles.yearText, { textAlign: "center" }]}>
-                    Género:
-                    {item?.genres.map((genre, idx) =>
-                      idx === 0 ? (
-                        <Text
-                          key={genre + idx}
-                          style={{ color: COLORS.white, fontWeight: "normal" }}
-                        >
-                          {" "}
-                          {genre}
-                        </Text>
-                      ) : (
-                        <Text
-                          key={genre + idx}
-                          style={{ color: COLORS.white, fontWeight: "normal" }}
-                        >
-                          {", "}
-                          {genre}
-                        </Text>
-                      )
-                    )}
-                  </Text>
-                </View>
-              ) : null}
             </View>
-
             {
               //*? WHERE WATCH
             }
@@ -242,9 +166,7 @@ const DetailsScreen = ({ navigation, route }) => {
                 fontSize: SIZES.h3,
                 color: COLORS.notSoGray,
                 fontWeight: "bold",
-                textAlign: "justify",
-                // borderWidth: 2,
-                // borderColor: 'red',
+                marginVertical: MARGIN.m1,
               }}
             >
               Sinopsis:
@@ -256,55 +178,44 @@ const DetailsScreen = ({ navigation, route }) => {
             {
               //*? DIRECTOR */
             }
-            {item?.director ? (
-              <Text
-                style={{
-                  fontSize: SIZES.h3,
-                  color: COLORS.notSoGray,
-                  fontWeight: "bold",
-                  marginTop: MARGIN.m1,
-                }}
-              >
-                Director:
-                <Text style={{ color: COLORS.lightGray, fontWeight: "bold" }}>
-                  {" "}
-                  {item?.director}
-                </Text>
+            <Text
+              style={{
+                fontSize: SIZES.h3,
+                color: COLORS.notSoGray,
+                fontWeight: "bold",
+                marginVertical: MARGIN.m1,
+              }}
+            >
+              Director:
+              <Text style={{ color: COLORS.lightGray, fontWeight: "bold" }}>
+                {" "}
+                {item?.director}
               </Text>
-            ) : null}
+            </Text>
             {
               //*? STARRING */
             }
-            {item?.starring.length ? (
+            {item.starring.length ? (
               <Text
                 style={{
                   fontSize: SIZES.h3,
                   color: COLORS.notSoGray,
-                  marginTop: MARGIN.m1,
+                  marginVertical: 2,
                   fontWeight: "bold",
                 }}
               >
                 Reparto:
-                {item?.starring.map((star, i) => {
+                {item.starring.map((star, i) => {
                   if (i === 0) {
                     return (
-                      <Text
-                        key={star + i}
-                        style={{
-                          color: COLORS.lightGray,
-                          fontWeight: "normal",
-                        }}
-                      >
+                      <Text key={star + i} style={{ color: COLORS.lightGray }}>
                         {" "}
                         {star}
                       </Text>
                     );
                   }
                   return (
-                    <Text
-                      key={star + i}
-                      style={{ color: COLORS.lightGray, fontWeight: "normal" }}
-                    >
+                    <Text key={star + i} style={{ color: COLORS.lightGray }}>
                       {", "}
                       {star}
                     </Text>
@@ -340,7 +251,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    marginHorizontal: MARGIN.m1,
     marginTop: MARGIN.m1,
     // backgroundColor: COLORS.darkGray,
   },
@@ -352,8 +262,6 @@ const styles = StyleSheet.create({
     fontSize: SIZES.h2,
     fontWeight: "bold",
     color: COLORS.white,
-    textAlign: "center",
-    maxWidth: TOTAL_WIDTH * 0.8,
   },
   descContainer: {
     flex: 2,
@@ -366,7 +274,7 @@ const styles = StyleSheet.create({
     flex: 1.6,
     width: "100%",
     backgroundColor: COLORS.black,
-    padding: TOTAL_HEIGHT * 0.01,
+    padding: Dimensions.get("window").height * 0.01,
   },
   backgroundImg: {
     width: "100%",
@@ -381,13 +289,14 @@ const styles = StyleSheet.create({
     marginTop: MARGIN.m5,
   },
   whereWatch: {
+    flex: 1.6,
     marginTop: MARGIN.m5,
     padding: MARGIN.m3,
     // borderWidth: 3,
     // borderColor: COLORS.white,
   },
   whereWatchContainer: {
-    // flexDirection: "row",
+    flexDirection: "row",
   },
   ratingContainer: {
     flexDirection: "row",
@@ -406,31 +315,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     // marginTop: Dimensions.get("window").height * -0.01,
   },
-
-  detailsBtns: {
-    height: TOTAL_HEIGHT * 0.05,
-    width: "85%",
-    alignSelf: "center",
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    marginTop: MARGIN.m1,
-  },
-  plainBtn: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: 'center',
-    backgroundColor: COLORS.black,
-    borderWidth: 1,
-    borderColor: COLORS.darkGray,
-    height: TOTAL_HEIGHT * 0.05,
-    // height: "100%",}
-    // padding: PADDING.pd6,
-    width: TOTAL_WIDTH * 0.4,
-    // width: '100%',
-  },
   scrollDesc: {
-    flexDirection: "column",
+    flexDirection: "row",
   },
+  scrollView: {},
 });
 
 export default DetailsScreen;

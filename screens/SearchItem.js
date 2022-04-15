@@ -2,11 +2,15 @@ import React, { useContext } from "react";
 import { MoviesContext } from "../src/context";
 import { Image, Text, View, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { COLORS, MARGIN, SIZES } from "../constants/theme";
+import {
+  COLORS,
+  MARGIN,
+  SIZES,
+  TOTAL_HEIGHT,
+  TOTAL_WIDTH,
+} from "../constants/theme";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 // import { TouchableOpacity } from "react-native-gesture-handler";
-
-
 
 const SearchItem = ({
   title,
@@ -16,7 +20,8 @@ const SearchItem = ({
   starring,
   imgUri,
   allItem,
-  savingMovie
+  savingMovie,
+  genres,
 }) => {
   // const appContext = useContext(MoviesContext);
   // const { saveMovie } = appContext;
@@ -38,7 +43,7 @@ const SearchItem = ({
         ) : (
           <Image
             style={styles.imgStyle}
-            resizeMode="cover"
+            resizeMode="contain"
             source={{
               uri:
                 imgUri.length > 235
@@ -49,10 +54,18 @@ const SearchItem = ({
         )}
       </View>
       <View style={styles.infoContainer}>
-        <Text style={styles.title}>{title}</Text>
+        <Text ellipsizeMode="tail" numberOfLines={2} style={styles.title}>
+          {title}
+        </Text>
         <View style={styles.descContainer}>
           <View style={styles.ratingContainer}>
-            <View style={{ flexDirection: "row" }}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               <MaterialCommunityIcons
                 name={rating !== "N/A" ? "star" : "cancel"}
                 color={
@@ -64,35 +77,77 @@ const SearchItem = ({
                     ? COLORS.red
                     : COLORS.orange
                 }
-                size={SIZES.h2}
+                size={SIZES.h2m}
               />
-              <Text style={styles.textPlain}>{rating}</Text>
+              <Text style={[styles.textPlain, { fontSize: SIZES.body3 }]}>
+                {rating}
+              </Text>
             </View>
             <Text style={[styles.textPlain, { color: COLORS.lightGray }]}>
-              Año: <Text style={{ color: COLORS.white }}>{year}</Text>{" "}
+              Año:{" "}
+              <Text style={{ color: COLORS.white, fontWeight: "normal" }}>
+                {year}
+              </Text>{" "}
             </Text>
           </View>
+          {genres ? (
+            <View
+              style={{
+                justifyContent: "center",
+                maxWidth: TOTAL_WIDTH * 0.5,
+              }}
+            >
+              <Text style={[styles.textPlain, { textAlign: "center" }]}>
+                Género:
+                {genres.map((genre, idx) =>
+                  idx === 0 ? (
+                    <Text
+                      key={genre + idx}
+                      style={{ color: COLORS.white, fontWeight: "normal" }}
+                    >
+                      {" "}
+                      {genre}
+                    </Text>
+                  ) : (
+                    <Text
+                      key={genre + idx}
+                      style={{ color: COLORS.white, fontWeight: "normal" }}
+                    >
+                      {", "}
+                      {genre}
+                    </Text>
+                  )
+                )}
+              </Text>
+            </View>
+          ) : null}
           <View style={styles.starringContainer}>
             <Text style={[styles.textPlain, { color: COLORS.lightGray }]}>
               Director: <Text style={{ color: COLORS.white }}>{director}</Text>
             </Text>
             <Text
               ellipsizeMode="tail"
-              numberOfLines={5}
+              numberOfLines={3}
               style={[styles.textPlain, { color: COLORS.lightGray }]}
             >
               Reparto:
               {starring.map((star, i) => {
                 if (i === 0) {
                   return (
-                    <Text key={star + i} style={{ color: COLORS.white }}>
+                    <Text
+                      key={star + i}
+                      style={{ color: COLORS.white, fontWeight: "normal" }}
+                    >
                       {" "}
                       {star}
                     </Text>
                   );
                 }
                 return (
-                  <Text key={star + i} style={{ color: COLORS.white }}>
+                  <Text
+                    key={star + i}
+                    style={{ color: COLORS.white, fontWeight: "normal" }}
+                  >
                     {", "}
                     {star}
                   </Text>
@@ -103,16 +158,18 @@ const SearchItem = ({
           {
             //? SAVE BUTTON
           }
-          <TouchableOpacity
-            onPress={() => savingMovie(allItem)}
-            style={styles.saveBtn}
-          >
-            <MaterialCommunityIcons
-              name="content-save"
-              size={SIZES.h2}
-              color={COLORS.pink}
-            />
-          </TouchableOpacity>
+          <View style={{flex: 1.2, flexDirection: 'column', justifyContent: 'flex-end'}}>
+            <TouchableOpacity
+              onPress={() => savingMovie(allItem)}
+              style={styles.saveBtn}
+            >
+              <MaterialCommunityIcons
+                name="content-save"
+                size={SIZES.h2}
+                color={COLORS.pink}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </View>
@@ -122,20 +179,16 @@ const SearchItem = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // marginTop: StatusBar.currentHeight || 0,
   },
   item: {
     flexDirection: "row",
-    backgroundColor: COLORS.gray,
-    marginVertical: 8,
-    // marginHorizontal: 16,
+    backgroundColor: COLORS.black,
+    marginVertical: SIZES.body6,
+    height: TOTAL_HEIGHT * 0.4,
   },
   imgContainer: {
-    flex: 1,
-    justifyContent: "center",
+    flex: 1.5,
     padding: MARGIN.m1,
-    width: "100%",
-    height: 290,
   },
   imgStyle: {
     height: "100%",
@@ -143,34 +196,40 @@ const styles = StyleSheet.create({
   infoContainer: {
     flex: 1,
     padding: MARGIN.m3,
+    height: TOTAL_HEIGHT * 0.4,
   },
   title: {
     fontSize: SIZES.h2,
+    fontWeight: "bold",
     color: COLORS.white,
+    textAlign: "center",
   },
   descContainer: {
-    flexDirection: "column",
+    flex: 1,
+    justifyContent: "space-between",
+    height: TOTAL_HEIGHT * 0.3,
+    // height: '90%'
   },
   ratingContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginVertical: MARGIN.m1,
+    flex: 1,
+    marginTop: SIZES.body6
   },
   textPlain: {
     color: COLORS.lightGray,
     textAlignVertical: "center",
+    textAlign: "center",
     fontWeight: "bold",
     fontSize: SIZES.body3,
     margin: MARGIN.m2,
   },
-  starringContainer: {
-    // backgroundColor: COLORS.lightGray,
-  },
+
   saveBtn: {
     alignItems: "center",
-    backgroundColor: COLORS.darkGray,
-    marginVertical: MARGIN.m4,
-    padding: 10,
+    backgroundColor: COLORS.black,
+    borderWidth: 1,
+    borderColor: COLORS.darkGray,
+    // marginVertical: MARGIN.m4,
+    padding: SIZES.body6,
   },
 });
 

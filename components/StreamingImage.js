@@ -142,8 +142,7 @@ const StreamingImage = ({ stream }) => {
 
 const styles = StyleSheet.create({
   streamingContainer: {
-    flex: 1,
-    marginTop: TOTAL_HEIGHT * -0.004,
+    // flex: 1,
   },
   streamingTitle: {
     textAlign: "center",
@@ -161,7 +160,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     // borderWidth: 1,
     // borderColor: COLORS.gold,
-    // flexDirection: "column",
+    marginVertical: -TOTAL_HEIGHT * 0.028,
   },
 });
 
