@@ -11,8 +11,9 @@ import DisneyPlusScreen from "../screens/DisneyPlusScreen";
 import { createStackNavigator } from "@react-navigation/stack";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { MoviesContext } from "../src/context";
 import PopularDetailsScreen from "../screens/PopularDetailsScreen";
+import ViewedScreen from "../screens/ViewedScreen";
+import GraphicsScreen from "../screens/GraphicsScreen";
 
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
@@ -23,45 +24,31 @@ const PopularTopTabs = () => {
       screenOptions={{
         tabBarLabelStyle: { fontSize: 12 },
         tabBarIndicatorStyle: { backgroundColor: COLORS.pink },
-        tabBarStyle: {backgroundColor: COLORS.black}
+        tabBarStyle:{backgroundColor: COLORS.black}
       }}
     >
-      <Tab.Screen name="Netflix" component={NetflixScreen} />
-      <Tab.Screen name="HBO Max" component={HboMaxScreen} />
-      <Tab.Screen name="Amazon Prime" component={AmazonPrimeScreen} />
-      <Tab.Screen name="Star+" component={StarPlusScreen} />
-      <Tab.Screen name="Disney+" component={DisneyPlusScreen} />
+      <Tab.Screen name="General" component={ViewedScreen} />
+      <Tab.Screen name="Por genero" component={GraphicsScreen} />
     </Tab.Navigator>
   );
 };
 
-const PopularNavigator = ({ navigation }) => {
+const ViewedNavigator = ({ navigation }) => {
 
 
   useEffect(() => {
-    console.log("POPULAR SCREEN TRIGGERED!");
+    console.log("VIEWED NAVIGATOR SCREEN TRIGGERED!");
   }, []);
 
   return (
     <Stack.Navigator>
       <Stack.Group>
         <Stack.Screen
-          name="PopularScreen"
+          name="ViewedNavigator"
           component={PopularTopTabs}
           options={{
-            headerTitle: 'Popular',
-            headerShown: true,
-            headerLeft: () => (
-              <TouchableOpacity style={{ marginLeft: TOTAL_WIDTH * 0.03 }}>
-                <MaterialCommunityIcons
-                  name="arrow-left"
-                  color={COLORS.white}
-                  size={30}
-                  onPress={() => navigation.navigate("HomePage")}
-                />
-              </TouchableOpacity>
-            ),
-            headerStyle: {backgroundColor: COLORS.black}
+            headerShown: false,
+
           }}
         />
       </Stack.Group>
@@ -94,4 +81,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PopularNavigator;
+export default ViewedNavigator;

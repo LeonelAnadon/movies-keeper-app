@@ -10,7 +10,7 @@ import {
   Modal,
   TouchableOpacity,
 } from "react-native";
-import { COLORS, MARGIN, PADDING, SIZES } from "../constants/theme";
+import { COLORS, MARGIN, PADDING, SIZES, TOTAL_HEIGHT, TOTAL_WIDTH } from "../constants/theme";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { MoviesContext } from "../src/context";
 // import { TouchableOpacity } from "react-native-gesture-handler";
@@ -59,6 +59,7 @@ const ViewedScreen = () => {
         }
       >
         <Text
+          onPress={() => alert(JSON.stringify(item))}
           style={{
             color: COLORS.lightGray,
             flex: 2.5,
@@ -362,8 +363,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalContainer: {
-    height: Dimensions.get("window").height * 0.3,
-    width: Dimensions.get("window").width * 0.75,
+    height: TOTAL_HEIGHT * 0.4,
+    width: TOTAL_WIDTH * 0.75,
     backgroundColor: COLORS.gray,
     borderRadius: 10,
     // borderWidth: 2,

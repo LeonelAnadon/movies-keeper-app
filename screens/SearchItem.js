@@ -97,7 +97,7 @@ const SearchItem = ({
                 maxWidth: TOTAL_WIDTH * 0.5,
               }}
             >
-              <Text style={[styles.textPlain, { textAlign: "center" }]}>
+              <Text ellipsizeMode="tail" numberOfLines={2} style={[styles.textPlain, { textAlign: "center" }]}>
                 Género:
                 {genres.map((genre, idx) =>
                   idx === 0 ? (

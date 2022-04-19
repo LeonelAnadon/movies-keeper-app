@@ -126,7 +126,11 @@ const MoviesProvider = (props) => {
         // const response = await api.get('/')
       }
     } catch (err) {
-      console.log(err);
+      setIsSearching(false);
+      setError404(true);
+      setData();
+      setHowMany();
+      setInputText("");
     }
   };
 
@@ -286,13 +290,14 @@ const MoviesProvider = (props) => {
       setWatchedMovies(setData);
       return "again";
     } else {
-      let { title, runing_time, year, movieId } = whichMovie;
+      let { title, runing_time, year, movieId, genres } = whichMovie;
       console.log(`El titulo es ${title}`);
       setWatchedMovies([
         ...watchedMovies,
         {
           title,
           runing_time,
+          genres,
           year,
           movieId,
           justAdded: true,

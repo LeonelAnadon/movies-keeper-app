@@ -17,6 +17,7 @@ import DetailsScreen from "../screens/DetailsScreen";
 import { MoviesContext } from "../src/context";
 import ViewedScreen from "../screens/ViewedScreen";
 import { backgroundColor, color } from "react-native/Libraries/Components/View/ReactNativeStyleAttributes";
+import ViewedNavigator from "./ViewedNavigator";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -38,7 +39,7 @@ function HomeTabs({ navigation }) {
   }
 
   useEffect(() => {
-    if(handleDeleteJustAdded === 1){
+    if(handleDeleteJustAdded === 4){
       deletingJustAdded()
       setHandleDeleteJustAdded(0)
     }
@@ -156,10 +157,11 @@ function HomeTabs({ navigation }) {
       }
       <Tab.Screen
         name="Vistas"
-        component={ViewedScreen}
+        component={ViewedNavigator}
         listeners={{
           tabPress: () => viewedScreenTriggered()}}
         options={{
+          headerShown: false,
           headerRight: () => (
             <TouchableOpacity
               style={{ marginRight: Dimensions.get("window").width * 0.05 }}

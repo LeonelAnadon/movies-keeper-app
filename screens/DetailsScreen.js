@@ -6,7 +6,8 @@ import {
   Image,
   Dimensions,
   ScrollView,
-  ToastAndroid
+  ToastAndroid,
+  Linking,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -107,17 +108,18 @@ const DetailsScreen = ({ navigation, route }) => {
         >
           <View style={styles.detailsBtns}>
             <TouchableOpacity
-              onPress={() => alert("OK")}
+              onPress={() => Linking.openURL(item?.trailer)}
               style={styles.plainBtn}
+              disabled={item?.trailer ? false : true}
             >
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <MaterialCommunityIcons
-                  name="video"
+                  name={item?.trailer ? 'video' : 'video-off'}
                   size={SIZES.h2}
                   color={COLORS.white}
                 />
                 <Text style={{ color: COLORS.white, marginLeft: MARGIN.m4 }}>
-                  Ver trailer
+                  {item?.trailer ? 'Ver trailer' : 'No disponible'}
                 </Text>
               </View>
             </TouchableOpacity>
