@@ -1,7 +1,6 @@
 import React, {
   useContext,
   useEffect,
-  useLayoutEffect,
   useRef,
   useState,
 } from "react";
@@ -15,8 +14,6 @@ import SearchScreen from "../screens/SearchScreen";
 import { COLORS, SIZES, TOTAL_HEIGHT, TOTAL_WIDTH  } from "../constants/theme";
 import DetailsScreen from "../screens/DetailsScreen";
 import { MoviesContext } from "../src/context";
-import ViewedScreen from "../screens/ViewedScreen";
-import { backgroundColor, color } from "react-native/Libraries/Components/View/ReactNativeStyleAttributes";
 import ViewedNavigator from "./ViewedNavigator";
 
 const Stack = createStackNavigator();

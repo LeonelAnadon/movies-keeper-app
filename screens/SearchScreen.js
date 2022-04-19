@@ -12,7 +12,7 @@ import {
   Vibration,
   ToastAndroid,
 } from "react-native";
-import { COLORS, MARGIN, SIZES } from "../constants/theme";
+import { COLORS, MARGIN, SIZES, TOTAL_HEIGHT, TOTAL_WIDTH } from "../constants/theme";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { MoviesContext } from "../src/context";
 import SearchItem from "./SearchItem";
@@ -71,7 +71,7 @@ function SearchScreen() {
             {`${textSearched}: ${howMany} resultados`}
           </Text>
         ) : (
-          <Text style={{ color: COLORS.white, margin: MARGIN.m1 }}>
+          <Text style={{ color: COLORS.white, margin: MARGIN.m1 }} onPress={() => alert(JSON.stringify(data))}>
             ¿Algúna peli en mente?
           </Text>
         )}
@@ -86,6 +86,44 @@ function SearchScreen() {
           />
         </View>
       </View>
+      {
+        !data?.results?.length && !error404 ?  
+        
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+           <MaterialCommunityIcons
+          onPress={() => props.navigation.navigate("Buscar")}
+          name="movie-filter"
+          color={COLORS.pink}
+          size={TOTAL_HEIGHT * 0.08}
+        />
+        <Text
+          style={{
+            color: COLORS.white,
+            fontSize: SIZES.h3,
+            marginBottom: MARGIN.m1,
+            flexWrap: "wrap",
+            maxWidth: TOTAL_WIDTH * 0.5,
+            textAlign: "center",
+          }}
+        >
+          Puedes buscar una pelicula y guardarla para no olvidarte de verla
+        </Text>
+        <Text
+          style={{
+            color: COLORS.white,
+            fontSize: SIZES.h3,
+            marginBottom: MARGIN.m1,
+            flexWrap: "wrap",
+            maxWidth: TOTAL_WIDTH * 0.5,
+            textAlign: "center",
+          }}
+        >
+          ¡Yay!
+        </Text>
+
+
+      </View> : null
+      }
 
       {error404 ? (
         <View

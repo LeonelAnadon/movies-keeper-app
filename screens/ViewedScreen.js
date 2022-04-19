@@ -16,7 +16,7 @@ import { MoviesContext } from "../src/context";
 // import { TouchableOpacity } from "react-native-gesture-handler";
 import { formatDate } from "../src/utils/formatDate";
 
-const ViewedScreen = () => {
+const ViewedScreen = (props) => {
   const appContext = useContext(MoviesContext);
   const {
     watchedMovies,
@@ -155,8 +155,42 @@ const ViewedScreen = () => {
   
 
   // const memoizedValueModal = useMemo(() => renderItem, [modalInfo]);
-  const memoizedValueItem = useCallback(({ item }) => Item({item}), [watchedMovies]);
+  // const memoizedValueItem = useCallback(({ item }) => Item({item}), [watchedMovies]);
 
+  if (!watchedMovies.length) {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Text
+          style={{
+            color: COLORS.white,
+            fontSize: SIZES.h3,
+            marginBottom: MARGIN.m1,
+          }}
+        >
+          Nada por aquí...
+        </Text>
+        <Text
+          style={{
+            color: COLORS.white,
+            fontSize: SIZES.h3,
+            marginBottom: MARGIN.m1,
+            flexWrap: "wrap",
+            maxWidth: TOTAL_WIDTH * 0.5,
+            textAlign: "center",
+          }}
+        >
+          Busca una pelicula, mirala y luego ven aquí
+        </Text>
+
+        <MaterialCommunityIcons
+          onPress={() => props.navigation.navigate("Buscar")}
+          name="plus-circle"
+          color={COLORS.pink}
+          size={TOTAL_HEIGHT * 0.08}
+        />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>

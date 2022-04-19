@@ -1,36 +1,34 @@
 import React, { useContext, useState, useRef, useEffect } from "react";
+import { StyleSheet, Text, View } from "react-native";
 import {
-  Animated,
-  StyleSheet,
-  Text,
-  View,
-  Button,
-  Image,
-  Linking,
-} from "react-native";
-import { COLORS, SIZES, TOTAL_HEIGHT, TOTAL_WIDTH } from "../constants/theme";
+  COLORS,
+  MARGIN,
+  SIZES,
+  TOTAL_HEIGHT,
+  TOTAL_WIDTH,
+} from "../constants/theme";
 import { VictoryLegend, VictoryLabel, VictoryPie } from "victory-native";
 import { MoviesContext } from "../src/context";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const GraphicsScreen = (props) => {
   const appContext = useContext(MoviesContext);
   const { watchedMovies } = appContext;
-  const [graphicData, setGraphicData] = useState([{ x: "Terror", y: 10 }]);
-  const [graphicLegends, setGraphicsLegends] = useState([{ name: "Loading..." }]);
-
-
-  // const data2 = [
-  //   { x: "Terror", y: 10 },
-  //   { x: "Comedia", y: 3 },
-  //   { x: "Romance", y: 5 },
-  //   { x: "Suspenso", y: 6 },
-  //   { x: "Misterio", y: 15},
-  // ];
+  const [graphicData, setGraphicData] = useState([]);
+  const [graphicLegends, setGraphicsLegends] = useState([
+    { name: "Loading..." },
+  ]);
 
   function normalizedData() {
     let res = watchedMovies
       .flatMap((genres) => {
-        return genres.genres;
+        let justOne = genres.genres.map((genre, idx) => {
+          if(idx < 1){
+            return genre
+          }
+          genre = ''
+        }).filter(clean => clean)
+        return justOne
       })
       .reduce((accumulator, value) => {
         return { ...accumulator, [value]: (accumulator[value] || 0) + 1 };
@@ -42,29 +40,61 @@ const GraphicsScreen = (props) => {
     setGraphicData(data);
   }
 
-  function graphicLegend(){
-    let data = []
-    let nw = graphicData.sort(function(a, b){return b.y - a.y})
-  for(let key of nw){
-    data.push({name: key.x})
-  }
-  setGraphicsLegends(data)
+  function graphicLegend() {
+    let data = [];
+    let nw = graphicData.sort(function (a, b) {
+      return b.y - a.y;
+    });
+    for (let key of nw) {
+      data.push({ name: key.x });
+    }
+    setGraphicsLegends(data);
   }
 
   useEffect(() => {
     normalizedData();
   }, [watchedMovies]);
   useEffect(() => {
-    
-    graphicLegend()
-  
-  }, [graphicData])
-  
+    graphicLegend();
+  }, [graphicData]);
+
+  if (!graphicData.length) {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Text
+          style={{
+            color: COLORS.white,
+            fontSize: SIZES.h3,
+            marginBottom: MARGIN.m1,
+          }}
+        >
+          Nada por aquí...
+        </Text>
+        <Text
+          style={{
+            color: COLORS.white,
+            fontSize: SIZES.h3,
+            marginBottom: MARGIN.m1,
+            flexWrap: "wrap",
+            maxWidth: TOTAL_WIDTH * 0.5,
+            textAlign: "center",
+          }}
+        >
+          Busca una pelicula, mirala y luego ven aquí
+        </Text>
+
+        <MaterialCommunityIcons
+          onPress={() => props.navigation.navigate("Buscar")}
+          name="plus-circle"
+          color={COLORS.pink}
+          size={TOTAL_HEIGHT * 0.08}
+        />
+      </View>
+    );
+  }
 
   return (
-    <View
-      style={styles.container}
-    >
+    <View style={styles.container}>
       <View style={{ flex: 1 }}>
         <View style={{ flex: 1, alignItems: "center" }}>
           <VictoryPie
@@ -80,20 +110,15 @@ const GraphicsScreen = (props) => {
             sortOrder="descending"
             colorScale="qualitative"
             innerRadius={40}
-            labelRadius={({ innerRadius }) => innerRadius + 25 }
+            labelRadius={({ innerRadius }) => innerRadius + 25}
             sortKey="y"
             labels={({ datum }) => `${datum.x}: ${datum.y}`}
-            
             padAngle={() => 3}
-            style={{ labels: { fill: "black", fontSize: 10, fontWeight: "bold" } }}
-            labelPosition={({ index }) => index 
-            ? "centroid"
-            : 'centroid'
-          }
-          labelPlacement={({ index }) => index
-            ? "parallel"
-            : "parallel"
-          }
+            style={{
+              labels: { fill: "white", fontSize: 10, fontWeight: "bold" },
+            }}
+            labelPosition={({ index }) => (index ? "centroid" : "centroid")}
+            // labelPlacement={({ index }) => (index ? "parallel" : "parallel")}
           />
           <VictoryLegend
             x={TOTAL_WIDTH * 0.2}
@@ -103,8 +128,12 @@ const GraphicsScreen = (props) => {
             orientation="vertical"
             itemsPerRow={5}
             gutter={40}
-            colorScale='qualitative'
-            style={{ border: { stroke: "black" }, title: { fontSize: 20, fill: 'white' }, labels: {fill: 'white'} }}
+            colorScale="qualitative"
+            style={{
+              border: { stroke: "black" },
+              title: { fontSize: 20, fill: "white" },
+              labels: { fill: "white" },
+            }}
             // data={[
             //   { name: "One"},
             //   { name: "Two"},
