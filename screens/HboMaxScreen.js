@@ -21,8 +21,16 @@ import {
   
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { COLORS, MARGIN, TOTAL_HEIGHT, TOTAL_WIDTH } from "../constants/theme";
+import {
+  COLORS,
+  MARGIN,
+  SIZES,
+  TOTAL_HEIGHT,
+  TOTAL_WIDTH,
+} from "../constants/theme";
 import { MoviesContext } from "../src/context";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 
 const HboMaxScreen = ({ navigation }) => {
   const appContext = useContext(MoviesContext);
@@ -63,25 +71,64 @@ const HboMaxScreen = ({ navigation }) => {
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
+    setisSearching(true);
     let res = await searchPopular("hbo-max");
-    if (res === "ok") setRefreshing(false);
-    if (res === "error") setRefreshing(false);
+    if (res === "ok") setRefreshing(false), setisSearching(false);
+    if (res === "error") setRefreshing(false), setisSearching(false);
   }, [refreshing]);
 
   useEffect(() => {
     // onRefresh()
   }, []);
 
+  if (!hboMaxPopular.length || refreshing) {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        {isSearching ? (
+          <ActivityIndicator
+            style={{ marginVertical: MARGIN.m5_big }}
+            size={50 || "large"}
+            color={COLORS.pink}
+          />
+        ) : null}
+        <Text
+          style={{
+            color: COLORS.white,
+            fontSize: SIZES.h3,
+            marginBottom: MARGIN.m1,
+          }}
+        >
+          {isSearching ? "Buscando..." : "Nada por aquí..."}
+        </Text>
+
+        {!isSearching ? (
+          <Text
+            style={{
+              color: COLORS.white,
+              fontSize: SIZES.h3,
+              marginBottom: MARGIN.m1,
+              flexWrap: "wrap",
+              maxWidth: TOTAL_WIDTH * 0.5,
+              textAlign: "center",
+            }}
+          >
+            ¡Toca para buscar!
+          </Text>
+        ) : null}
+
+        <MaterialCommunityIcons
+          onPress={() => onRefresh()}
+          name="movie-search"
+          color={COLORS.pink}
+          size={TOTAL_HEIGHT * 0.08}
+        />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      {isSearching ? (
-        <ActivityIndicator
-          style={{ marginVertical: MARGIN.m5_big }}
-          size={50 || "large"}
-          color={COLORS.pink}
-        />
-      ) : null}
-            {error404Popular === 'netflix' ? (
+            {error404Popular === 'hbo-max' ? (
         <View
           style={{
             flexDirection: "column",
@@ -116,6 +163,7 @@ const HboMaxScreen = ({ navigation }) => {
               onRefresh={onRefresh}
               progressBackgroundColor={COLORS.black}
               colors={[COLORS.pink]}
+              size='large'
             />
           }
           renderItem={Item}

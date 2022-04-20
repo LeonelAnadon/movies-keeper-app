@@ -21,7 +21,7 @@ export const handleSaveBase64 = async (imgKey, base64Code) => {
 };
 
 export const handleGetBase64 = async (imgKey) => {
-  if((typeof imgKey) === 'undefined') return
+  if((typeof imgKey) === 'undefined' || !imgKey) return
   try {
     let imgUrisera = await FileSystem.readAsStringAsync(imageToSave(imgKey));
     let convertBase64 = `data:image/jpeg;base64,${imgUrisera}`;

@@ -139,6 +139,12 @@ const MoviesProvider = (props) => {
       console.log(`Buscando popular...`);
       if (tag === "netflix") setNetflixPopular([]);
       if (tag === "hbo-max") setHboMaxPopular([]);
+      if (tag === "amazon-prime-video") setAmazonPrimePopular([]);
+      if (tag === "star-plus") setStarPlusPopular([]);
+
+
+      
+
       setIsSearchingPopular(true);
       setError404Popular();
       const {
@@ -148,7 +154,9 @@ const MoviesProvider = (props) => {
         setIsSearchingPopular(false);
         if (tag === "netflix") setError404Popular('netflix'), setNetflixPopular();
         if (tag === "hbo-max") setError404Popular('hbo-max'), setHboMaxPopular()
-       
+        if (tag === "amazon-prime-video") setError404Popular('amazon-prime-video'), setAmazonPrimePopular()
+        if (tag === "star-plus") setError404Popular('star-plus'), setStarPlusPopular()
+        if (tag === "disney-plus") setError404Popular('disney-plus'), setDisneyPlusPopular()
         console.log("error");
       } else {
         setIsSearchingPopular(false);
@@ -158,6 +166,18 @@ const MoviesProvider = (props) => {
         } else if (response.tag === "netflix") {
           setNetflixPopular(response.results.movieData);
         }
+        else if (response.tag === "amazon-prime-video") {
+          console.log('works')
+          setAmazonPrimePopular(response.results.movieData);
+        } 
+        else if (response.tag === "star-plus") {
+          console.log('works')
+          setStarPlusPopular(response.results.movieData);
+        } 
+        else if (response.tag === "disney-plus") {
+          console.log('works')
+          setDisneyPlusPopular(response.results.movieData);
+        } 
         console.log("successful");
       }
     } catch (err) {
@@ -200,6 +220,23 @@ const MoviesProvider = (props) => {
       handleSaveBase64(newMovie.imgKey, newMovie.url_img);
       let movieWoutBase64 = { ...newMovie, url_img: "data:image/jpeg;base64," };
       setSavedMovies([...savedMovies, movieWoutBase64]);
+      return "saved";
+    }
+  };
+
+  const savePopularMovie = (movie) => {
+    console.log("saving popular movie");
+    let newMovie = {
+      ...movie,
+      genres: movie.genres.split(',').map(x => x.trim()).filter(clean => clean),
+      imgKey: false,
+      savedDate: new Date(),
+      movieId: movie.title.replace(/( )/gm, "").toLowerCase() + movie.year,
+    };
+    if (savedMovies?.find((movie) => movie.movieId === newMovie.movieId)) {
+      return "error";
+    } else {
+      setSavedMovies([...savedMovies, newMovie]);
       return "saved";
     }
   };
@@ -440,6 +477,7 @@ const MoviesProvider = (props) => {
         textSearched,
         setJustOne,
         saveMovie,
+        savePopularMovie,
         savedMovies,
         deleteMovie,
         watchedMovies,
@@ -461,7 +499,7 @@ const MoviesProvider = (props) => {
         amazonPrimePopular,
         starPlusPopular,
         findPopular,
-        popularFetched
+        popularFetched,
       }}
     >
       {props.children}

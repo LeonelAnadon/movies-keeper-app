@@ -46,7 +46,7 @@ const GraphicsScreen = (props) => {
       return b.y - a.y;
     });
     for (let key of nw) {
-      data.push({ name: key.x });
+      data.push({ name: key.x});
     }
     setGraphicsLegends(data);
   }
@@ -112,13 +112,13 @@ const GraphicsScreen = (props) => {
             innerRadius={40}
             labelRadius={({ innerRadius }) => innerRadius + 25}
             sortKey="y"
-            labels={({ datum }) => `${datum.x}: ${datum.y}`}
+            labels={({ datum }) => `${datum.x.slice(0, 15)}: ${datum.y}`}
             padAngle={() => 3}
             style={{
               labels: { fill: "white", fontSize: 10, fontWeight: "bold" },
             }}
             labelPosition={({ index }) => (index ? "centroid" : "centroid")}
-            // labelPlacement={({ index }) => (index ? "parallel" : "parallel")}
+            labelPlacement={({ index }) => graphicData.length > 2 && (index ? "parallel" : "parallel")}
           />
           <VictoryLegend
             x={TOTAL_WIDTH * 0.2}

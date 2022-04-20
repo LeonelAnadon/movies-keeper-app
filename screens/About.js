@@ -43,7 +43,8 @@ const About = (props) => {
   return (
     <View style={styles.container}>
       <Text style={{ color: COLORS.white }}>Testing Screen</Text>
-
+      <Text style={{ color: COLORS.white }}>{JSON.stringify(data, null, 3)}</Text>
+      <Button title="Show directory" onPress={() => handleTest()}/>
       <View>
         <VictoryChart width={TOTAL_WIDTH * 0.9} maxDomain={{ y: 15 }}>
           <VictoryBar

@@ -1,28 +1,23 @@
-import { useFocusEffect } from "@react-navigation/native";
-import React, {
-  useContext,
-  useState,
-  useRef,
-  useEffect,
-  useCallback,
-} from "react";
+import React, { useContext, useState, useEffect, useCallback } from "react";
 import {
-  Animated,
   StyleSheet,
   Text,
   View,
-  Button,
   Image,
   ActivityIndicator,
   FlatList,
   RefreshControl,
-  InteractionManager,
-  Pressable,
-  
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { COLORS, MARGIN, TOTAL_HEIGHT, TOTAL_WIDTH } from "../constants/theme";
+import {
+  COLORS,
+  MARGIN,
+  SIZES,
+  TOTAL_HEIGHT,
+  TOTAL_WIDTH,
+} from "../constants/theme";
 import { MoviesContext } from "../src/context";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const NetflixScreen = ({ navigation }) => {
   const appContext = useContext(MoviesContext);
@@ -32,8 +27,8 @@ const NetflixScreen = ({ navigation }) => {
   const [isSearching, setisSearching] = useState(false);
 
   const handlePopularDetails = (movieUrl) => {
-    navigation.navigate("PopularDetails", {movieUrl});
-  }
+    navigation.navigate("PopularDetails", { movieUrl });
+  };
 
   const Item = ({ item }) => {
     return (
@@ -45,9 +40,7 @@ const NetflixScreen = ({ navigation }) => {
           marginHorizontal: "1.5%",
         }}
       >
-        <TouchableOpacity
-          onPress={() => handlePopularDetails(item.movieUrl)}
-        >
+        <TouchableOpacity onPress={() => handlePopularDetails(item.movieUrl)}>
           <Image
             source={{ uri: item.imgUrl }}
             resizeMode="contain"
@@ -63,25 +56,64 @@ const NetflixScreen = ({ navigation }) => {
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
+    setisSearching(true);
     let res = await searchPopular("netflix");
-    if (res === "ok") setRefreshing(false);
-    if (res === "error") setRefreshing(false);
+    if (res === "ok") setRefreshing(false), setisSearching(false);
+    if (res === "error") setRefreshing(false), setisSearching(false);
   }, [refreshing]);
 
   useEffect(() => {
     // onRefresh()
   }, []);
 
+  if (!netflixPopular.length || refreshing) {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        {isSearching ? (
+          <ActivityIndicator
+            style={{ marginVertical: MARGIN.m5_big }}
+            size={50 || "large"}
+            color={COLORS.pink}
+          />
+        ) : null}
+        <Text
+          style={{
+            color: COLORS.white,
+            fontSize: SIZES.h3,
+            marginBottom: MARGIN.m1,
+          }}
+        >
+          {isSearching ? "Buscando..." : "Nada por aquí..."}
+        </Text>
+
+        {!isSearching ? (
+          <Text
+            style={{
+              color: COLORS.white,
+              fontSize: SIZES.h3,
+              marginBottom: MARGIN.m1,
+              flexWrap: "wrap",
+              maxWidth: TOTAL_WIDTH * 0.5,
+              textAlign: "center",
+            }}
+          >
+            ¡Toca para buscar!
+          </Text>
+        ) : null}
+
+        <MaterialCommunityIcons
+          onPress={() => onRefresh()}
+          name="movie-search"
+          color={COLORS.pink}
+          size={TOTAL_HEIGHT * 0.08}
+        />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      {isSearching ? (
-        <ActivityIndicator
-          style={{ marginVertical: MARGIN.m5_big }}
-          size={50 || "large"}
-          color={COLORS.pink}
-        />
-      ) : null}
-            {error404Popular === 'netflix' ? (
+      {error404Popular === "netflix" ? (
         <View
           style={{
             flexDirection: "column",
@@ -106,6 +138,35 @@ const NetflixScreen = ({ navigation }) => {
           </Text>
         </View>
       ) : null}
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Text
+          style={{
+            color: COLORS.white,
+            fontSize: SIZES.h3,
+            marginBottom: MARGIN.m1,
+          }}
+        >
+          Nada por aquí...
+        </Text>
+        <Text
+          style={{
+            color: COLORS.white,
+            fontSize: SIZES.h3,
+            marginBottom: MARGIN.m1,
+            flexWrap: "wrap",
+            maxWidth: TOTAL_WIDTH * 0.5,
+            textAlign: "center",
+          }}
+        >
+          ¡Desliza hacía abajo para buscar!
+        </Text>
+
+        <MaterialCommunityIcons
+          name="chevron-triple-down"
+          color={COLORS.pink}
+          size={TOTAL_HEIGHT * 0.08}
+        />
+      </View>
       <View>
         <FlatList
           data={netflixPopular}
@@ -116,6 +177,7 @@ const NetflixScreen = ({ navigation }) => {
               onRefresh={onRefresh}
               progressBackgroundColor={COLORS.black}
               colors={[COLORS.pink]}
+              size="large"
             />
           }
           renderItem={Item}

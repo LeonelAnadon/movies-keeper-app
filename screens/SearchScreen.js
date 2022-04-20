@@ -91,7 +91,6 @@ function SearchScreen() {
         
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
            <MaterialCommunityIcons
-          onPress={() => props.navigation.navigate("Buscar")}
           name="movie-filter"
           color={COLORS.pink}
           size={TOTAL_HEIGHT * 0.08}

@@ -31,7 +31,7 @@ import { handleGetBase64 } from "../src/services/fileSystemSave";
 import { formatDateWithoutTime } from "../src/utils/formatDate";
 
 const ItemSavedMovies = ({ item, handleInfo, handleCheck, handleWarning }) => {
-  const [dataImg, setDataImg] = useState("");
+  const [dataImg, setDataImg] = useState("data:image/jpeg;base64,");
 
   
   const getImgGo = useCallback(
@@ -47,13 +47,13 @@ const ItemSavedMovies = ({ item, handleInfo, handleCheck, handleWarning }) => {
   );
 
   useEffect(() => {
-    if(!dataImg === '') return
+    if(!dataImg === '' || !item?.imgKey) return
     setTimeout(() => {
       getImgGo();
     }, 0)
   }, []);
   useEffect(() => {
-    if(!dataImg === '') return
+    if(!dataImg === '' || !item?.imgKey) return
     setTimeout(() => {
       getImgGo();
     }, 0)
@@ -83,7 +83,7 @@ const ItemSavedMovies = ({ item, handleInfo, handleCheck, handleWarning }) => {
               style={styles.img}
               resizeMode="contain"
               source={{
-                uri: dataImg === "" ? "data:image/jpeg;base64," : dataImg,
+                uri: item?.imgKey === false ? item.url_img : dataImg,
               }}
             />
           </TouchableOpacity>
@@ -103,11 +103,7 @@ const ItemSavedMovies = ({ item, handleInfo, handleCheck, handleWarning }) => {
             color={
               item.rating === "N/A"
                 ? COLORS.lightGray
-                : item.rating >= "5.5"
-                ? COLORS.gold
-                : item.rating <= "4"
-                ? COLORS.red
-                : COLORS.orange
+                : COLORS.gold
             }
             size={SIZES.h2m}
             style={{ marginRight: MARGIN.m2 }}
@@ -119,6 +115,8 @@ const ItemSavedMovies = ({ item, handleInfo, handleCheck, handleWarning }) => {
         {
           //? DIRECTOR
         }
+        {
+          item?.director ? 
         <View style={[styles.centerRow]}>
           <Text
             style={[
@@ -140,7 +138,8 @@ const ItemSavedMovies = ({ item, handleInfo, handleCheck, handleWarning }) => {
               {`\n ${item.director}`}
             </Text>
           </Text>
-        </View>
+        </View> : null
+        }
         {
           //? STARRING
         }

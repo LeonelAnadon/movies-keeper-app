@@ -1,24 +1,17 @@
-import { useFocusEffect } from "@react-navigation/native";
 import React, {
   useContext,
   useState,
-  useRef,
   useEffect,
-  useCallback,
 } from "react";
 import {
-  Animated,
   StyleSheet,
   ScrollView,
   Text,
   View,
-  Button,
   Image,
   ActivityIndicator,
-  FlatList,
-  RefreshControl,
-  InteractionManager,
-  Pressable,
+  Linking,
+  ToastAndroid
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import {
@@ -39,6 +32,7 @@ const PopularDetailsScreen = ({ route }) => {
   const [loadingImg, setLoadingImg] = useState(false);
   const appContext = useContext(MoviesContext);
   const {
+    savePopularMovie,
     findPopular,
     popularFetched: { results: item },
   } = appContext;
@@ -53,6 +47,16 @@ const PopularDetailsScreen = ({ route }) => {
       console.log(err);
     }
   };
+
+  const savingPopularMovie = (movie) => {
+    const message = savePopularMovie(movie)
+    if(message === 'error'){
+      ToastAndroid.show('Ya existe la pelicula en tu colección', ToastAndroid.SHORT)
+    } else if (message === 'saved'){
+      ToastAndroid.show('Guardé la peli en tu colección', ToastAndroid.SHORT)
+    }
+  //  alert(JSON.stringify(movie))
+  }
 
   useEffect(() => {
     handleGetMovie();
@@ -144,23 +148,24 @@ const PopularDetailsScreen = ({ route }) => {
       <View style={[styles.container, styles.scrollDesc]}>
         <ScrollView style={styles.scrollView} contentContainerStyle={{ justifyContent: "center" }}>
         <View style={styles.detailsBtns}>
-            <TouchableOpacity
-              onPress={() => alert("OK")}
+        <TouchableOpacity
+              onPress={() => Linking.openURL(item?.trailer)}
               style={styles.plainBtn}
+              disabled={item?.trailer ? false : true}
             >
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <MaterialCommunityIcons
-                  name="video"
+                  name={item?.trailer ? 'video' : 'video-off'}
                   size={SIZES.h2}
                   color={COLORS.white}
                 />
                 <Text style={{ color: COLORS.white, marginLeft: MARGIN.m4 }}>
-                  Ver trailer
+                  {item?.trailer ? 'Ver trailer' : 'No disponible'}
                 </Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => alert('jeje')}
+              onPress={() => savingPopularMovie(item)}
               style={styles.plainBtn}
             >
               <View style={{ flexDirection: "row", alignItems: "center" }}>

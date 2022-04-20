@@ -96,7 +96,7 @@ const DetailsScreen = ({ navigation, route }) => {
             resizeMode="contain"
             fadeDuration={500}
             source={{
-              uri: dataImg === "" ? "data:image/jpeg;base64," : dataImg,
+              uri: item?.imgKey === false ? item.url_img : dataImg,
             }}
           />
         )}
@@ -168,7 +168,7 @@ const DetailsScreen = ({ navigation, route }) => {
                 //*? DURATION
               }
               <View style={{ justifyContent: "center" }}>
-                {!!item?.runing_time.match("min") ? (
+                {item?.imgKey ? (
                   <Text style={[styles.yearText, { textAlign: "center" }]}>
                     Duración:
                     <Text style={{ color: COLORS.white, fontWeight: "bold" }}>
@@ -198,7 +198,7 @@ const DetailsScreen = ({ navigation, route }) => {
                 >
                   <Text style={[styles.yearText, { textAlign: "center" }]}>
                     Género:
-                    {item?.genres.map((genre, idx) =>
+                    {item?.genres?.map((genre, idx) =>
                       idx === 0 ? (
                         <Text
                           key={genre + idx}
