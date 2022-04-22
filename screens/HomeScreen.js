@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   StyleSheet,
   Text,
@@ -220,9 +226,16 @@ import FilterModal from "../components/FilterModal";
 
 function HomeScreen({ navigation }) {
   const appContext = useContext(MoviesContext);
-  const { savedMovies, deleteMovie, handleWatchedMovie, sortNameSavedMovies, sortSavedDateMovies } = appContext;
+  const {
+    savedMovies,
+    deleteMovie,
+    handleWatchedMovie,
+    sortNameSavedMovies,
+    sortSavedDateMovies,
+  } = appContext;
   const [sort, setSort] = useState(false);
-  const [nowMemo, setNowMemo] = useState(false)
+  const [nowMemo, setNowMemo] = useState(false);
+  const [nowAct, setNowAct] = useState(false)
 
   const handleInfo = (movieId) => {
     console.log(`Information of ${movieId}`);
@@ -259,16 +272,16 @@ function HomeScreen({ navigation }) {
   };
 
   const handleSortByName = () => {
-    setSort(!sort)
-    sortNameSavedMovies(sort)
-  }
+    setSort(!sort);
+    sortNameSavedMovies(sort);
+  };
   const handleSortByDate = () => {
-    setSort(!sort)
-    sortSavedDateMovies(sort)
-  }
+    setSort(!sort);
+    sortSavedDateMovies(sort);
+  };
 
-  
-  
+
+
   const renderItem = ({ item }) => {
     return (
       <ItemSavedMovies
@@ -280,13 +293,46 @@ function HomeScreen({ navigation }) {
       />
     );
   };
-  //  const memoizedValue = useMemo(() => renderItem, [savedMovies]);
-  const memoizedValue = useCallback(({ item }) => renderItem({item}), [savedMovies, handleCheck]);
-
-
+  const memoizedValue = useCallback(
+    ({ item }) => renderItem({ item }),
+    [savedMovies, handleCheck]
+  );
 
   return (
     <SafeAreaView style={styles.container}>
+      {
+        !savedMovies.length ?
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Text
+          style={{
+            color: COLORS.white,
+            fontSize: SIZES.h3,
+            marginBottom: MARGIN.m1,
+          }}
+        >
+          Esto está muy vacio...
+        </Text>
+        <Text
+          style={{
+            color: COLORS.white,
+            fontSize: SIZES.h3,
+            marginBottom: MARGIN.m1,
+            flexWrap: "wrap",
+            maxWidth: TOTAL_WIDTH * 0.5,
+            textAlign: "center",
+          }}
+        >
+          Buscá una pelicula, guardala y luego vení aquí
+        </Text>
+
+        <MaterialCommunityIcons
+          onPress={() => navigation.navigate("Buscar")}
+          name="plus-circle"
+          color={COLORS.pink}
+          size={TOTAL_HEIGHT * 0.08}
+        />
+      </View> : null
+      }
       <Animated.FlatList
         data={savedMovies}
         renderItem={memoizedValue}
@@ -298,7 +344,11 @@ function HomeScreen({ navigation }) {
         <View style={styles.sortSavedMoviesContainer}>
           <TouchableOpacity onPress={() => handleSortByName()}>
             <View
-              style={{ flexDirection: "row", marginLeft: TOTAL_WIDTH * 0.07, paddingVertical: MARGIN.m1 }}
+              style={{
+                flexDirection: "row",
+                marginLeft: TOTAL_WIDTH * 0.07,
+                paddingVertical: MARGIN.m1,
+              }}
             >
               <MaterialCommunityIcons
                 name="sort-alphabetical-variant"
@@ -318,7 +368,11 @@ function HomeScreen({ navigation }) {
           </TouchableOpacity>
           <TouchableOpacity onPress={() => handleSortByDate()}>
             <View
-              style={{ flexDirection: "row", marginLeft: TOTAL_WIDTH * 0.1, paddingVertical: MARGIN.m1 }}
+              style={{
+                flexDirection: "row",
+                marginLeft: TOTAL_WIDTH * 0.1,
+                paddingVertical: MARGIN.m1,
+              }}
             >
               <MaterialCommunityIcons
                 name="sort-variant"

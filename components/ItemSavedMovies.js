@@ -52,12 +52,12 @@ const ItemSavedMovies = ({ item, handleInfo, handleCheck, handleWarning }) => {
       getImgGo();
     }, 0)
   }, []);
-  useEffect(() => {
-    if(!dataImg === '' || !item?.imgKey) return
-    setTimeout(() => {
-      getImgGo();
-    }, 0)
-  }, [item]);
+  // useEffect(() => {
+  //   if(!dataImg === '' || !item?.imgKey) return
+  //   setTimeout(() => {
+  //     getImgGo();
+  //   }, 0)
+  // }, [item]);
 
   return (
     <Animated.View

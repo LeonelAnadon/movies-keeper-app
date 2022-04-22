@@ -22,10 +22,19 @@ import {
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import HomeNavigator from "./HomeNavigator";
 import About from "../screens/About";
-import { COLORS, SIZES, TOTAL_HEIGHT, TOTAL_WIDTH } from "../constants/theme";
+import {
+  COLORS,
+  MARGIN,
+  PADDING,
+  SIZES,
+  TOTAL_HEIGHT,
+  TOTAL_WIDTH,
+} from "../constants/theme";
 import { MoviesContext } from "../src/context";
 import PopularNavigator from "./PopularNavigator";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import Settings from "../screens/Settings";
+import api from "../src/api/api";
 
 const Drawer = createDrawerNavigator();
 
@@ -39,45 +48,25 @@ const theme = {
 
 function CustomDrawerContent(props) {
   const appContext = useContext(MoviesContext);
-  const { deleteAllViewedMovies, deleteAllSavedMovies } = appContext;
+  const { handleLogout } = appContext
   const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
-  const handleDeleteAllWatchedMovies = () =>
-    Alert.alert(
-      "Eliminando 🗑",
-      "Eliminaré todas las pelis que viste. ¿Continúo?",
-      [
-        {
-          text: "No",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel",
-        },
-        { text: "Si, borralas.", onPress: () => deleteAllViewedMovies() },
-      ]
-    );
-  const handleDeleteAllSavedMovies = () =>
-    Alert.alert(
-      "Eliminando 🗑",
-      "Eliminaré todas las pelis que guardaste. ¿Continúo?",
-      [
-        {
-          text: "No",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel",
-        },
-        { text: "Si, borralas.", onPress: () => deleteAllSavedMovies() },
-      ]
-    );
 
   return (
     <DrawerContentScrollView {...props}>
-      <View style={{ flexDirection: "row", padding: 15, alignItems: "center" }}>
+      <View
+        style={{
+          flexDirection: "row",
+          paddingVertical: PADDING.pd6,
+          paddingHorizontal: PADDING.pd7,
+          alignItems: "center",
+        }}
+      >
         <MaterialCommunityIcons
-          name="video-vintage"
+          name="account-circle"
           color={COLORS.pink}
-          size={SIZES.h1}
-          style={{ marginHorizontal: SIZES.h4 }}
+          size={TOTAL_WIDTH * 0.08}
+          style={{ marginHorizontal: TOTAL_WIDTH * 0.018 }}
         />
         <Text
           style={{
@@ -86,67 +75,37 @@ function CustomDrawerContent(props) {
             fontWeight: "bold",
           }}
         >
-          Movies Keeper
+          {props.userName}
         </Text>
       </View>
 
       <DrawerItemList {...props} />
 
-      <View
-        style={{ justifyContent: "flex-end", height: TOTAL_HEIGHT * 0.65 }}
-      >
-        {/* <DrawerItem
-          label="Información"
-          onPress={() => props.navigation.navigate("Vistas")}
-        /> */}
+      <View style={{ justifyContent: "flex-end", height: TOTAL_HEIGHT * 0.65 }}>
         <View>
           <DrawerItem
             label={() => (
-              <Text style={{ color: COLORS.lightGray, marginLeft: -20 }}>
-                Borrar Vistas
+              <Text style={{ color: COLORS.lightGray, marginLeft: -MARGIN.m6 }}>
+                Salir
               </Text>
             )}
-            onPress={() => handleDeleteAllWatchedMovies()}
+            onPress={() => handleLogout()}
             icon={() => (
               <MaterialCommunityIcons
-                name="delete"
+                name="exit-to-app"
                 color={COLORS.pink}
                 size={SIZES.h1}
               />
             )}
-            style={{ marginHorizontal: 4 }}
-          />
-          <DrawerItem
-            label={() => (
-              <Text style={{ color: COLORS.lightGray, marginLeft: -20 }}>
-                Borrar Guardadas
-              </Text>
-            )}
-            onPress={() => handleDeleteAllSavedMovies()}
-            icon={() => (
-              <MaterialCommunityIcons
-                name="delete"
-                color={COLORS.pink}
-                size={SIZES.h1}
-              />
-            )}
-            style={{ marginHorizontal: 4 }}
+            style={{ marginHorizontal: MARGIN.m1 }}
           />
         </View>
       </View>
-
-      {/* <Switch
-        trackColor={{ false: COLORS.lightGray, true: COLORS.lightPink }}
-        thumbColor={isEnabled ? COLORS.pink : COLORS.white}
-        ios_backgroundColor={COLORS.lightGray}
-        onValueChange={toggleSwitch}
-        value={isEnabled}
-      /> */}
     </DrawerContentScrollView>
   );
 }
 
-const AppNavigator = ({navigation}) => {
+const AppNavigator = ({ navigation, userName }) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar
@@ -164,10 +123,12 @@ const AppNavigator = ({navigation}) => {
             drawerStatusBarAnimation: "slide",
             drawerActiveTintColor: "#dad8d9",
             drawerItemStyle: { marginVertical: 10 },
-            keyboardDismissMode: 'on-drag',
-            swipeEnabled: false
+            keyboardDismissMode: "on-drag",
+            swipeEnabled: false,
           }}
-          drawerContent={(props) => <CustomDrawerContent {...props} />}
+          drawerContent={(props) => (
+            <CustomDrawerContent {...props} userName={userName} />
+          )}
         >
           <Drawer.Screen
             name="HomePage"
@@ -192,7 +153,6 @@ const AppNavigator = ({navigation}) => {
             options={{
               headerShown: false,
 
-
               drawerLabel: () => (
                 <Text style={{ color: COLORS.lightGray, marginLeft: -20 }}>
                   Recomendados para ver
@@ -209,23 +169,23 @@ const AppNavigator = ({navigation}) => {
             component={PopularNavigator}
           />
           <Drawer.Screen
-            name="About"
+            name="settings"
             options={{
-              headerShown: true,
+              headerShown: false,
               drawerLabel: () => (
                 <Text style={{ color: COLORS.lightGray, marginLeft: -20 }}>
-                  About
+                  Configuración
                 </Text>
               ),
               drawerIcon: () => (
                 <MaterialCommunityIcons
-                  name="information"
+                  name="cog"
                   color={COLORS.lightGray}
                   size={SIZES.h2}
                 />
               ),
             }}
-            component={About}
+            component={Settings}
           />
         </Drawer.Navigator>
       </NavigationContainer>

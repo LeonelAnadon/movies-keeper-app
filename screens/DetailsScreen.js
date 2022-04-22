@@ -75,7 +75,7 @@ const DetailsScreen = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => alert(JSON.stringify(item))}>
+      <TouchableOpacity>
         <Text style={styles.title}>{item?.title}</Text>
       </TouchableOpacity>
       <View style={styles.imgContainer}>

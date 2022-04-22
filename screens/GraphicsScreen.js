@@ -80,7 +80,7 @@ const GraphicsScreen = (props) => {
             textAlign: "center",
           }}
         >
-          Busca una pelicula, mirala y luego ven aquí
+          Buscá una pelicula, mirala y luego vení aquí
         </Text>
 
         <MaterialCommunityIcons

@@ -25,7 +25,7 @@ const MoviesProvider = (props) => {
   const [amazonPrimePopular, setAmazonPrimePopular] = useState([]);
   const [starPlusPopular, setStarPlusPopular] = useState([]);
   const [popularFetched, setPopularFetched] = useState([])
-
+  const [userName, setUserName] = useState('')
   const [toggleFilter, setToggleFilter] = useState(false);
   const [error404, setError404] = useState(false);
   const [error404Popular, setError404Popular] = useState('');
@@ -66,6 +66,11 @@ const MoviesProvider = (props) => {
     getWatchedMovies();
     getSavedMovies();
   }, []);
+
+  useEffect(() => {
+    setUserName(props.userName)
+  }, [props.userName])
+  
 
   useEffect(() => {
     (async function () {
@@ -116,7 +121,17 @@ const MoviesProvider = (props) => {
           setData();
           setHowMany();
           setInputText("");
-        } else {
+        } else if (response.data.response === 'unauthorized'){
+          setIsSearching(false);
+          setError404(true);
+          setData();
+          setHowMany();
+          setInputText("");
+          props.setIsLogin(status => ({...status, status: false}))
+        }
+        
+        
+        else {
           setIsSearching(false);
           setData(response.data.response);
           setHowMany(response.data.response.results.length);
@@ -141,10 +156,6 @@ const MoviesProvider = (props) => {
       if (tag === "hbo-max") setHboMaxPopular([]);
       if (tag === "amazon-prime-video") setAmazonPrimePopular([]);
       if (tag === "star-plus") setStarPlusPopular([]);
-
-
-      
-
       setIsSearchingPopular(true);
       setError404Popular();
       const {
@@ -158,7 +169,11 @@ const MoviesProvider = (props) => {
         if (tag === "star-plus") setError404Popular('star-plus'), setStarPlusPopular()
         if (tag === "disney-plus") setError404Popular('disney-plus'), setDisneyPlusPopular()
         console.log("error");
-      } else {
+      } else if (response === 'unauthorized'){
+        setIsSearchingPopular(false);
+        props.setIsLogin(status => ({...status, status: false}))
+      }
+      else {
         setIsSearchingPopular(false);
         console.log(response.tag);
         if (response.tag === "hbo-max") {
@@ -195,7 +210,12 @@ const MoviesProvider = (props) => {
       } = await api.post(`/findMovie/`, {url});
       if (response === "error: 404") {
         return {res: 'error'}
-      } else {
+      } 
+      else if (response === 'unauthorized'){
+        props.setIsLogin(status => ({...status, status: false}))
+        return {res: 'error'}
+      }
+      else {
         // return {...response, res: 'ok'}
         setPopularFetched(response)
         return {res: 'ok'}
@@ -434,17 +454,27 @@ const MoviesProvider = (props) => {
   };
 
   const deleteAllViewedMovies = useCallback(() => {
-    setWatchedMovies([]);
-    setTimeout(() => {
-      getWatchedMovies();
-    }, 0);
-    console.log("ALL WATCHED MOVIES DELETED!!");
+    try{
+      setWatchedMovies([]);
+      setTimeout(() => {
+        getWatchedMovies();
+      }, 0);
+      console.log("ALL WATCHED MOVIES DELETED!!");
+      return 'ok'
+    }catch(err){
+      return 'error'
+    }
   }, [watchedMovies]);
 
   const deleteAllSavedMovies = useCallback(() => {
-    setSavedMovies([]);
-    handleDeleteAllFiles();
-    console.log("ALL SAVED MOVIES DELETED!!");
+    try{
+      setSavedMovies([]);
+      handleDeleteAllFiles();
+      console.log("ALL SAVED MOVIES DELETED!!");
+      return 'ok'
+    }catch(err){
+      return 'error'
+    }
   }, [savedMovies]);
 
   const deletingJustAdded = () => {
@@ -459,6 +489,16 @@ const MoviesProvider = (props) => {
         return movie;
       })
     );
+  };
+
+  const handleLogout = async () => {
+    console.log(`${userName} se desloguea`)
+    let {
+      data: { response },
+    } = await api.get("/logout");
+    if(response === 'done'){
+      props.setIsLogin(status => ({...status, status: false}))
+    } 
   };
 
   return (
@@ -500,6 +540,8 @@ const MoviesProvider = (props) => {
         starPlusPopular,
         findPopular,
         popularFetched,
+        userName,
+        handleLogout
       }}
     >
       {props.children}

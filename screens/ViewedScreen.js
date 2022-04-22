@@ -59,7 +59,7 @@ const ViewedScreen = (props) => {
         }
       >
         <Text
-          onPress={() => alert(JSON.stringify(item))}
+          
           style={{
             color: COLORS.lightGray,
             flex: 2.5,
@@ -179,7 +179,7 @@ const ViewedScreen = (props) => {
             textAlign: "center",
           }}
         >
-          Busca una pelicula, mirala y luego ven aquí
+          Buscá una pelicula, mirala y luego vení aquí
         </Text>
 
         <MaterialCommunityIcons
